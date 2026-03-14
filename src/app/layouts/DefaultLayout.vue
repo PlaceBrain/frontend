@@ -14,11 +14,7 @@ const { isDesktop } = useBreakpoint();
         isDesktop ? 'pt-20' : 'pt-4 pb-20',
       ]"
     >
-      <RouterView v-slot="{ Component }">
-        <Transition name="fade" mode="out-in">
-          <component :is="Component" />
-        </Transition>
-      </RouterView>
+      <RouterView />
     </main>
   </div>
 </template>
