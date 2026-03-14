@@ -69,10 +69,7 @@ function handleRemove() {
         >
           Remove member
         </UiButton>
-        <div class="flex gap-2">
-          <UiButton variant="secondary" @click="$emit('close')">Cancel</UiButton>
-          <UiButton type="submit" :loading="isUpdating">Save</UiButton>
-        </div>
+        <UiButton type="submit" :loading="isUpdating">Save</UiButton>
       </div>
     </form>
   </UiModal>
