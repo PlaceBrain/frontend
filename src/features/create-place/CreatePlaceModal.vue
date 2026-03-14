@@ -46,8 +46,7 @@ function handleSubmit() {
       <UiInput v-model="name" label="Name" placeholder="Place name" />
       <UiInput v-model="description" label="Description" placeholder="Optional description" />
       <p v-if="error" class="text-sm text-[var(--color-danger)]">{{ error }}</p>
-      <div class="flex justify-end gap-2">
-        <UiButton variant="secondary" @click="$emit('close')">Cancel</UiButton>
+      <div class="flex justify-end">
         <UiButton type="submit" :loading="isPending">Create</UiButton>
       </div>
     </form>

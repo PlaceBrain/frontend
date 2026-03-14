@@ -53,8 +53,7 @@ function handleSubmit() {
       <UiInput v-model="email" label="Email" placeholder="Enter user email" />
       <UiSelect v-model="role" :options="roleOptions" label="Role" />
       <p v-if="error" class="text-sm text-[var(--color-danger)]">{{ error }}</p>
-      <div class="flex justify-end gap-2">
-        <UiButton variant="secondary" @click="$emit('close')">Cancel</UiButton>
+      <div class="flex justify-end">
         <UiButton type="submit" :loading="isPending">Add</UiButton>
       </div>
     </form>

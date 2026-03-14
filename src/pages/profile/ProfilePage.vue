@@ -18,8 +18,9 @@ const ui = useUiStore();
       <UiSpinner size="lg" />
     </div>
 
-    <div v-else-if="user" class="max-w-md space-y-6">
+    <div v-else-if="user" class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+        <h2 class="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Account</h2>
         <div class="space-y-3">
           <div>
             <p class="text-xs text-[var(--color-text-secondary)]">Username</p>
@@ -38,17 +39,20 @@ const ui = useUiStore();
         </div>
       </div>
 
-      <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-[var(--color-text-primary)]">Appearance</p>
-            <p class="text-xs text-[var(--color-text-secondary)]">{{ ui.theme === 'light' ? 'Light' : 'Dark' }} mode</p>
+      <div class="space-y-6">
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+          <h2 class="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Preferences</h2>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-[var(--color-text-primary)]">Appearance</p>
+              <p class="text-xs text-[var(--color-text-secondary)]">{{ ui.theme === 'light' ? 'Light' : 'Dark' }} mode</p>
+            </div>
+            <ThemeToggle />
           </div>
-          <ThemeToggle />
         </div>
-      </div>
 
-      <LogoutButton />
+        <LogoutButton />
+      </div>
     </div>
   </div>
 </template>
