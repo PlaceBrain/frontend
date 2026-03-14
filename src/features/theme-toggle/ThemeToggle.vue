@@ -7,7 +7,7 @@ const ui = useUiStore();
 <template>
   <button
     class="flex items-center justify-center h-9 w-9 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)] transition-colors cursor-pointer"
-    @click="ui.toggleTheme()"
+    @click="ui.toggleTheme($event)"
     :title="ui.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
   >
     <svg v-if="ui.theme === 'light'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
