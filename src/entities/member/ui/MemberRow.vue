@@ -19,9 +19,9 @@ defineEmits<{
 <template>
   <div class="flex items-center justify-between py-3">
     <div class="flex items-center gap-3">
-      <UiAvatar :name="member.user_id" size="sm" />
+      <UiAvatar :name="member.username" size="sm" />
       <div>
-        <p class="text-sm font-medium text-[var(--color-text-primary)]">{{ member.user_id }}</p>
+        <p class="text-sm font-medium text-[var(--color-text-primary)]">{{ member.username }}</p>
         <UiBadge variant="accent">{{ formatRole(member.role) }}</UiBadge>
       </div>
     </div>

@@ -18,7 +18,7 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const userId = ref('');
+const email = ref('');
 const role = ref('viewer');
 const error = ref('');
 
@@ -32,10 +32,10 @@ const { mutate, isPending } = useAddMember(props.placeId);
 function handleSubmit() {
   error.value = '';
   mutate(
-    { target_user_id: userId.value, role: role.value },
+    { email: email.value, role: role.value },
     {
       onSuccess: () => {
-        userId.value = '';
+        email.value = '';
         role.value = 'viewer';
         emit('close');
       },
@@ -50,7 +50,7 @@ function handleSubmit() {
 <template>
   <UiModal :open="open" title="Add member" @close="$emit('close')">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
-      <UiInput v-model="userId" label="User ID" placeholder="Enter user ID" />
+      <UiInput v-model="email" label="Email" placeholder="Enter user email" />
       <UiSelect v-model="role" :options="roleOptions" label="Role" />
       <p v-if="error" class="text-sm text-[var(--color-danger)]">{{ error }}</p>
       <div class="flex justify-end gap-2">

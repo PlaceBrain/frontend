@@ -2,11 +2,12 @@ import type { PlaceRole } from '@/shared/types';
 
 export interface Member {
   user_id: string;
+  username: string;
   role: PlaceRole;
 }
 
 export interface AddMemberRequest {
-  target_user_id: string;
+  email: string;
   role: string;
 }
 
