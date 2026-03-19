@@ -9,4 +9,18 @@ export const queryKeys = {
   members: {
     list: (placeId: string) => ['members', placeId] as const,
   },
+  devices: {
+    list: (placeId: string) => ['devices', placeId] as const,
+    detail: (placeId: string, deviceId: string) => ['devices', placeId, deviceId] as const,
+  },
+  sensors: {
+    list: (placeId: string, deviceId: string) => ['sensors', placeId, deviceId] as const,
+  },
+  actuators: {
+    list: (placeId: string, deviceId: string) => ['actuators', placeId, deviceId] as const,
+  },
+  thresholds: {
+    list: (placeId: string, deviceId: string, sensorId: string) =>
+      ['thresholds', placeId, deviceId, sensorId] as const,
+  },
 } as const;

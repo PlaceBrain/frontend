@@ -7,6 +7,7 @@ import EditPlaceModal from '@/features/edit-place/EditPlaceModal.vue';
 import DeletePlaceButton from '@/features/delete-place/DeletePlaceButton.vue';
 import UiButton from '@/shared/ui/UiButton.vue';
 import UiSpinner from '@/shared/ui/UiSpinner.vue';
+import { useMqtt } from '@/shared/composables/useMqtt';
 
 const route = useRoute();
 const router = useRouter();
@@ -18,6 +19,8 @@ const showEditModal = ref(false);
 const canManage = computed(() =>
   place.value?.user_role === 'owner' || place.value?.user_role === 'admin',
 );
+
+const { latestValues } = useMqtt(placeId);
 </script>
 
 <template>
@@ -43,6 +46,13 @@ const canManage = computed(() =>
             </p>
           </div>
           <div v-if="canManage" class="flex items-center gap-2">
+            <UiButton
+              variant="secondary"
+              size="sm"
+              @click="router.push({ name: 'devices-list', params: { placeId } })"
+            >
+              Manage devices
+            </UiButton>
             <UiButton variant="secondary" size="sm" @click="showEditModal = true">
               Edit
             </UiButton>
@@ -51,7 +61,7 @@ const canManage = computed(() =>
         </div>
       </div>
 
-      <PlaceTabs :place-id="placeId" :can-manage="canManage" />
+      <PlaceTabs :place-id="placeId" :can-manage="canManage" :latest-values="latestValues" />
 
       <EditPlaceModal
         :open="showEditModal"

@@ -17,6 +17,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/place-detail/PlaceDetailPage.vue'),
       },
       {
+        path: 'places/:placeId/devices',
+        name: 'devices-list',
+        component: () => import('@/pages/devices-list/DevicesListPage.vue'),
+      },
+      {
+        path: 'places/:placeId/devices/:deviceId',
+        name: 'device-detail',
+        component: () => import('@/pages/device-detail/DeviceDetailPage.vue'),
+      },
+      {
         path: 'profile',
         name: 'profile',
         component: () => import('@/pages/profile/ProfilePage.vue'),
@@ -25,16 +35,6 @@ const routes: RouteRecordRaw[] = [
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('@/pages/dashboard/DashboardPage.vue'),
-      },
-      {
-        path: 'places/:placeId/sensors/new',
-        name: 'sensor-editor',
-        component: () => import('@/pages/sensor-editor/SensorEditorPage.vue'),
-      },
-      {
-        path: 'places/:placeId/devices/new',
-        name: 'device-editor',
-        component: () => import('@/pages/device-editor/DeviceEditorPage.vue'),
       },
     ],
   },

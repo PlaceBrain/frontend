@@ -1,0 +1,128 @@
+import { ref, onMounted, onUnmounted, type Ref } from 'vue';
+import mqtt from 'mqtt';
+import { api } from '@/shared/api/client';
+import type { MqttCredentials } from '@/entities/device/model/types';
+
+export function useMqtt(placeId: Ref<string> | string) {
+  const latestValues = ref<Map<string, Map<string, { value: number; timestamp: string }>>>(
+    new Map(),
+  );
+  const alerts = ref<Array<Record<string, unknown>>>([]);
+  const connected = ref(false);
+
+  let client: mqtt.MqttClient | null = null;
+  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  let credentialRefreshTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const resolveId = () => (typeof placeId === 'string' ? placeId : placeId.value);
+
+  async function fetchCredentials(): Promise<MqttCredentials> {
+    const { data } = await api.post<MqttCredentials>('/api/mqtt/credentials');
+    return data;
+  }
+
+  function handleMessage(topic: string, payload: Buffer) {
+    try {
+      const data = JSON.parse(payload.toString());
+      const parts = topic.split('/');
+
+      if (topic.endsWith('/telemetry') && parts.length >= 5) {
+        const deviceId = parts[3];
+        const values = data.values as Record<string, number> | undefined;
+        const ts = data.ts || new Date().toISOString();
+        if (values) {
+          if (!latestValues.value.has(deviceId)) {
+            latestValues.value.set(deviceId, new Map());
+          }
+          const deviceMap = latestValues.value.get(deviceId)!;
+          for (const [key, value] of Object.entries(values)) {
+            deviceMap.set(key, { value: Number(value), timestamp: ts });
+          }
+          // Trigger reactivity
+          latestValues.value = new Map(latestValues.value);
+        }
+      } else if (topic.endsWith('/alerts')) {
+        alerts.value = [...alerts.value.slice(-99), data];
+      }
+    } catch {
+      // Ignore parse errors
+    }
+  }
+
+  async function connect() {
+    try {
+      const creds = await fetchCredentials();
+
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const wsUrl = `${protocol}://${window.location.host}/mqtt`;
+
+      client = mqtt.connect(wsUrl, {
+        username: creds.username,
+        password: creds.password,
+        reconnectPeriod: 0, // We handle reconnection manually
+      });
+
+      client.on('connect', () => {
+        connected.value = true;
+        const id = resolveId();
+        client?.subscribe(`placebrain/${id}/#`);
+      });
+
+      client.on('message', handleMessage);
+
+      client.on('close', () => {
+        connected.value = false;
+      });
+
+      client.on('error', () => {
+        connected.value = false;
+        scheduleReconnect(5000);
+      });
+
+      // Schedule credential refresh before expiry
+      const expiresInMs = creds.expires_at * 1000 - Date.now() - 60_000;
+      if (expiresInMs > 0) {
+        credentialRefreshTimer = setTimeout(() => {
+          disconnect();
+          connect();
+        }, expiresInMs);
+      }
+    } catch {
+      scheduleReconnect(5000);
+    }
+  }
+
+  function scheduleReconnect(delay: number) {
+    if (reconnectTimer) return;
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      connect();
+    }, delay);
+  }
+
+  function disconnect() {
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+    if (credentialRefreshTimer) {
+      clearTimeout(credentialRefreshTimer);
+      credentialRefreshTimer = null;
+    }
+    if (client) {
+      client.end(true);
+      client = null;
+    }
+    connected.value = false;
+  }
+
+  onMounted(() => {
+    connect();
+  });
+
+  onUnmounted(() => {
+    disconnect();
+  });
+
+  return { latestValues, alerts, connected };
+}

@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import UiTabs from '@/shared/ui/UiTabs.vue';
-import UiEmptyState from '@/shared/ui/UiEmptyState.vue';
 import MembersPanel from '@/widgets/members-panel/MembersPanel.vue';
+import SensorsPanel from '@/widgets/sensors-panel/SensorsPanel.vue';
+import ActuatorsPanel from '@/widgets/actuators-panel/ActuatorsPanel.vue';
 
 interface Props {
   placeId: string;
   canManage: boolean;
+  latestValues?: Map<string, Map<string, { value: number; timestamp: string }>>;
 }
 
 defineProps<Props>();
 
-const activeTab = ref('members');
+const activeTab = ref('sensors');
 
 const tabs = [
   { key: 'sensors', label: 'Sensors' },
-  { key: 'devices', label: 'Devices' },
+  { key: 'actuators', label: 'Actuators' },
   { key: 'members', label: 'Members' },
 ];
 </script>
@@ -25,20 +27,22 @@ const tabs = [
     <UiTabs v-model="activeTab" :tabs="tabs" />
 
     <div class="mt-4">
-      <MembersPanel
-        v-if="activeTab === 'members'"
+      <SensorsPanel
+        v-if="activeTab === 'sensors'"
         :place-id="placeId"
         :can-manage="canManage"
+        :latest-values="latestValues"
       />
-      <UiEmptyState
-        v-else-if="activeTab === 'sensors'"
-        title="Sensors"
-        description="Sensor monitoring will be available here soon."
+      <ActuatorsPanel
+        v-else-if="activeTab === 'actuators'"
+        :place-id="placeId"
+        :can-manage="canManage"
+        :latest-values="latestValues"
       />
-      <UiEmptyState
-        v-else-if="activeTab === 'devices'"
-        title="Devices"
-        description="Device management will be available here soon."
+      <MembersPanel
+        v-else-if="activeTab === 'members'"
+        :place-id="placeId"
+        :can-manage="canManage"
       />
     </div>
   </div>
