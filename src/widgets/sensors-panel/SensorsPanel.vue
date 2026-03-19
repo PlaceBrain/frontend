@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useDevicesWithDetails } from "@/entities/device/api/device.api";
 import type { Sensor } from "@/entities/device/model/types";
@@ -40,6 +40,31 @@ function getLiveValue(deviceId: string, key: string) {
   const deviceValues = props.latestValues.get(deviceId);
   if (!deviceValues) return null;
   return deviceValues.get(key) ?? null;
+}
+
+const now = ref(Date.now());
+let tickTimer: ReturnType<typeof setInterval> | null = null;
+onMounted(() => {
+  tickTimer = setInterval(() => {
+    now.value = Date.now();
+  }, 1000);
+});
+onUnmounted(() => {
+  if (tickTimer) clearInterval(tickTimer);
+});
+
+function formatRelativeTime(timestamp: string): string {
+  const then = new Date(timestamp).getTime();
+  const diffMs = now.value - then;
+  const seconds = Math.floor(diffMs / 1000);
+  if (seconds < 4) return "just now";
+  if (seconds < 60) return `${seconds}s ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 }
 
 function navigateToDevice(deviceId: string) {
@@ -91,6 +116,9 @@ function navigateToDevice(deviceId: string) {
                 class="text-xs text-[var(--color-text-secondary)] ml-1"
               >
                 {{ row.sensor.unit_label }}
+              </span>
+              <span class="text-xs text-[var(--color-text-secondary)] ml-2">
+                {{ formatRelativeTime(getLiveValue(row.deviceId, row.sensor.key)!.timestamp) }}
               </span>
             </template>
             <UiBadge v-else variant="default">--</UiBadge>

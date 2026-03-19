@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { usePlace } from "@/entities/place/api/place.api";
+import { useDevices } from "@/entities/device/api/device.api";
+import type { SensorReadingResponse } from "@/entities/device/api/telemetry.api";
 import PlaceTabs from "@/widgets/place-tabs/PlaceTabs.vue";
 import EditPlaceModal from "@/features/edit-place/EditPlaceModal.vue";
 import DeletePlaceButton from "@/features/delete-place/DeletePlaceButton.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 import UiSpinner from "@/shared/ui/UiSpinner.vue";
 import { useMqtt } from "@/shared/composables/useMqtt";
+import { api } from "@/shared/api/client";
 
 const route = useRoute();
 const router = useRouter();
 const placeId = computed(() => route.params.placeId as string);
 const { data: place, isLoading } = usePlace(placeId);
+const { data: devices } = useDevices(placeId);
 
 const showEditModal = ref(false);
 
@@ -21,6 +25,38 @@ const canManage = computed(
 );
 
 const { latestValues } = useMqtt(placeId);
+
+// Preload latest readings from API for each device
+watch(
+  devices,
+  async (deviceList) => {
+    if (!deviceList) return;
+    const results = await Promise.allSettled(
+      deviceList.map(async (d) => {
+        const { data } = await api.get<{ readings: SensorReadingResponse[] }>(
+          `/api/places/${placeId.value}/devices/${d.device_id}/telemetry/latest`,
+        );
+        return { deviceId: d.device_id, readings: data.readings };
+      }),
+    );
+    for (const result of results) {
+      if (result.status !== "fulfilled") continue;
+      const { deviceId, readings } = result.value;
+      if (!latestValues.value.has(deviceId)) {
+        latestValues.value.set(deviceId, new Map());
+      }
+      const deviceMap = latestValues.value.get(deviceId)!;
+      for (const reading of readings) {
+        // Only set if MQTT hasn't already provided a fresher value
+        if (!deviceMap.has(reading.key)) {
+          deviceMap.set(reading.key, { value: reading.value, timestamp: reading.time });
+        }
+      }
+    }
+    latestValues.value = new Map(latestValues.value);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

@@ -23,4 +23,8 @@ export const queryKeys = {
     list: (placeId: string, deviceId: string, sensorId: string) =>
       ["thresholds", placeId, deviceId, sensorId] as const,
   },
+  telemetry: {
+    latest: (placeId: string, deviceId: string) =>
+      ["telemetry", "latest", placeId, deviceId] as const,
+  },
 } as const;
