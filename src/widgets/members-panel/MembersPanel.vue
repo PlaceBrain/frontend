@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useMembers } from '@/entities/member/api/member.api';
-import MemberRow from '@/entities/member/ui/MemberRow.vue';
-import AddMemberModal from '@/features/manage-members/AddMemberModal.vue';
-import ChangeMemberRole from '@/features/manage-members/ChangeMemberRole.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
-import UiSpinner from '@/shared/ui/UiSpinner.vue';
-import UiEmptyState from '@/shared/ui/UiEmptyState.vue';
+import { ref } from "vue";
+import { useMembers } from "@/entities/member/api/member.api";
+import MemberRow from "@/entities/member/ui/MemberRow.vue";
+import AddMemberModal from "@/features/manage-members/AddMemberModal.vue";
+import ChangeMemberRole from "@/features/manage-members/ChangeMemberRole.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
 
 interface Props {
   placeId: string;
@@ -25,9 +25,7 @@ const editTarget = ref<{ userId: string; role: string } | null>(null);
   <div>
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-base font-semibold text-[var(--color-text-primary)]">Members</h3>
-      <UiButton v-if="canManage" size="sm" @click="showAddModal = true">
-        Add member
-      </UiButton>
+      <UiButton v-if="canManage" size="sm" @click="showAddModal = true"> Add member </UiButton>
     </div>
 
     <div v-if="isLoading" class="flex justify-center py-8">
@@ -50,11 +48,7 @@ const editTarget = ref<{ userId: string; role: string } | null>(null);
       />
     </div>
 
-    <AddMemberModal
-      :open="showAddModal"
-      :place-id="placeId"
-      @close="showAddModal = false"
-    />
+    <AddMemberModal :open="showAddModal" :place-id="placeId" @close="showAddModal = false" />
 
     <ChangeMemberRole
       v-if="editTarget"

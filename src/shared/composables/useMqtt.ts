@@ -1,7 +1,7 @@
-import { ref, onMounted, onUnmounted, type Ref } from 'vue';
-import mqtt from 'mqtt';
-import { api } from '@/shared/api/client';
-import type { MqttCredentials } from '@/entities/device/model/types';
+import { ref, onMounted, onUnmounted, type Ref } from "vue";
+import mqtt from "mqtt";
+import { api } from "@/shared/api/client";
+import type { MqttCredentials } from "@/entities/device/model/types";
 
 export function useMqtt(placeId: Ref<string> | string) {
   const latestValues = ref<Map<string, Map<string, { value: number; timestamp: string }>>>(
@@ -14,19 +14,19 @@ export function useMqtt(placeId: Ref<string> | string) {
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let credentialRefreshTimer: ReturnType<typeof setTimeout> | null = null;
 
-  const resolveId = () => (typeof placeId === 'string' ? placeId : placeId.value);
+  const resolveId = () => (typeof placeId === "string" ? placeId : placeId.value);
 
   async function fetchCredentials(): Promise<MqttCredentials> {
-    const { data } = await api.post<MqttCredentials>('/api/mqtt/credentials');
+    const { data } = await api.post<MqttCredentials>("/api/mqtt/credentials");
     return data;
   }
 
   function handleMessage(topic: string, payload: Buffer) {
     try {
       const data = JSON.parse(payload.toString());
-      const parts = topic.split('/');
+      const parts = topic.split("/");
 
-      if (topic.endsWith('/telemetry') && parts.length >= 5) {
+      if (topic.endsWith("/telemetry") && parts.length >= 5) {
         const deviceId = parts[3];
         const values = data.values as Record<string, number> | undefined;
         const ts = data.ts || new Date().toISOString();
@@ -41,7 +41,7 @@ export function useMqtt(placeId: Ref<string> | string) {
           // Trigger reactivity
           latestValues.value = new Map(latestValues.value);
         }
-      } else if (topic.endsWith('/alerts')) {
+      } else if (topic.endsWith("/alerts")) {
         alerts.value = [...alerts.value.slice(-99), data];
       }
     } catch {
@@ -53,7 +53,7 @@ export function useMqtt(placeId: Ref<string> | string) {
     try {
       const creds = await fetchCredentials();
 
-      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const protocol = window.location.protocol === "https:" ? "wss" : "ws";
       const wsUrl = `${protocol}://${window.location.host}/mqtt`;
 
       client = mqtt.connect(wsUrl, {
@@ -62,19 +62,19 @@ export function useMqtt(placeId: Ref<string> | string) {
         reconnectPeriod: 0, // We handle reconnection manually
       });
 
-      client.on('connect', () => {
+      client.on("connect", () => {
         connected.value = true;
         const id = resolveId();
         client?.subscribe(`placebrain/${id}/#`);
       });
 
-      client.on('message', handleMessage);
+      client.on("message", handleMessage);
 
-      client.on('close', () => {
+      client.on("close", () => {
         connected.value = false;
       });
 
-      client.on('error', () => {
+      client.on("error", () => {
         connected.value = false;
         scheduleReconnect(5000);
       });

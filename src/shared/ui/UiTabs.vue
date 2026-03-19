@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick, onMounted } from "vue";
 
 interface Tab {
   key: string;
@@ -14,17 +14,17 @@ interface Props {
 const props = defineProps<Props>();
 
 defineEmits<{
-  'update:modelValue': [key: string];
+  "update:modelValue": [key: string];
 }>();
 
 const tabRefs = ref<HTMLElement[]>([]);
 const containerRef = ref<HTMLElement>();
-const indicatorStyle = ref({ left: '0px', width: '0px', opacity: '0' });
+const indicatorStyle = ref({ left: "0px", width: "0px", opacity: "0" });
 
 function updateIndicator() {
   const activeIndex = props.tabs.findIndex((tab) => tab.key === props.modelValue);
   if (activeIndex === -1 || !tabRefs.value[activeIndex] || !containerRef.value) {
-    indicatorStyle.value = { ...indicatorStyle.value, opacity: '0' };
+    indicatorStyle.value = { ...indicatorStyle.value, opacity: "0" };
     return;
   }
   const el = tabRefs.value[activeIndex];
@@ -33,12 +33,15 @@ function updateIndicator() {
   indicatorStyle.value = {
     left: `${elRect.left - containerRect.left}px`,
     width: `${elRect.width}px`,
-    opacity: '1',
+    opacity: "1",
   };
 }
 
 onMounted(() => nextTick(updateIndicator));
-watch(() => props.modelValue, () => nextTick(updateIndicator));
+watch(
+  () => props.modelValue,
+  () => nextTick(updateIndicator),
+);
 </script>
 
 <template>
@@ -51,7 +54,11 @@ watch(() => props.modelValue, () => nextTick(updateIndicator));
       <button
         v-for="(tab, i) in tabs"
         :key="tab.key"
-        :ref="(el) => { if (el) tabRefs[i] = (el as any).$el ?? el }"
+        :ref="
+          (el) => {
+            if (el) tabRefs[i] = (el as any).$el ?? el;
+          }
+        "
         :class="[
           'px-4 py-2.5 text-sm font-medium transition-colors duration-150 border-b-2 border-transparent cursor-pointer',
           modelValue === tab.key

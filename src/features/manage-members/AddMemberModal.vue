@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useAddMember } from '@/entities/member/api/member.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiSelect from '@/shared/ui/UiSelect.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
+import { ref } from "vue";
+import { useAddMember } from "@/entities/member/api/member.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiSelect from "@/shared/ui/UiSelect.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
 
 interface Props {
   open: boolean;
@@ -18,26 +18,26 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const email = ref('');
-const role = ref('viewer');
-const error = ref('');
+const email = ref("");
+const role = ref("viewer");
+const error = ref("");
 
 const roleOptions = [
-  { value: 'admin', label: 'Admin' },
-  { value: 'viewer', label: 'Viewer' },
+  { value: "admin", label: "Admin" },
+  { value: "viewer", label: "Viewer" },
 ];
 
 const { mutate, isPending } = useAddMember(props.placeId);
 
 function handleSubmit() {
-  error.value = '';
+  error.value = "";
   mutate(
     { email: email.value, role: role.value },
     {
       onSuccess: () => {
-        email.value = '';
-        role.value = 'viewer';
-        emit('close');
+        email.value = "";
+        role.value = "viewer";
+        emit("close");
       },
       onError: (e) => {
         error.value = getErrorMessage(e);

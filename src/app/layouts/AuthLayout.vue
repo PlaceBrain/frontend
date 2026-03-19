@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import LogoIcon from '@/shared/ui/LogoIcon.vue';
+import LogoIcon from "@/shared/ui/LogoIcon.vue";
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-[var(--color-surface-elevated)] px-4">
+  <div
+    class="flex min-h-screen items-center justify-center bg-[var(--color-surface-elevated)] px-4"
+  >
     <div class="w-full max-w-sm">
       <div class="mb-8 flex flex-col items-center text-[var(--color-text-primary)]">
         <LogoIcon size="3rem" class="mb-3" />
-        <h1 class="text-2xl font-bold text-[var(--color-text-primary)]" style="font-family: 'Space Grotesk', system-ui, sans-serif">
+        <h1
+          class="text-2xl font-bold text-[var(--color-text-primary)]"
+          style="font-family: &quot;Space Grotesk&quot;, system-ui, sans-serif"
+        >
           PlaceBrain
         </h1>
       </div>

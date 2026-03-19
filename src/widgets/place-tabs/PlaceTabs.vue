@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import UiTabs from '@/shared/ui/UiTabs.vue';
-import MembersPanel from '@/widgets/members-panel/MembersPanel.vue';
-import SensorsPanel from '@/widgets/sensors-panel/SensorsPanel.vue';
-import ActuatorsPanel from '@/widgets/actuators-panel/ActuatorsPanel.vue';
+import { ref } from "vue";
+import UiTabs from "@/shared/ui/UiTabs.vue";
+import MembersPanel from "@/widgets/members-panel/MembersPanel.vue";
+import SensorsPanel from "@/widgets/sensors-panel/SensorsPanel.vue";
+import ActuatorsPanel from "@/widgets/actuators-panel/ActuatorsPanel.vue";
 
 interface Props {
   placeId: string;
@@ -13,12 +13,12 @@ interface Props {
 
 defineProps<Props>();
 
-const activeTab = ref('sensors');
+const activeTab = ref("sensors");
 
 const tabs = [
-  { key: 'sensors', label: 'Sensors' },
-  { key: 'actuators', label: 'Actuators' },
-  { key: 'members', label: 'Members' },
+  { key: "sensors", label: "Sensors" },
+  { key: "actuators", label: "Actuators" },
+  { key: "members", label: "Members" },
 ];
 </script>
 

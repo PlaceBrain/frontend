@@ -1,26 +1,26 @@
 export const queryKeys = {
   user: {
-    me: () => ['user', 'me'] as const,
+    me: () => ["user", "me"] as const,
   },
   places: {
-    all: () => ['places'] as const,
-    detail: (id: string) => ['places', id] as const,
+    all: () => ["places"] as const,
+    detail: (id: string) => ["places", id] as const,
   },
   members: {
-    list: (placeId: string) => ['members', placeId] as const,
+    list: (placeId: string) => ["members", placeId] as const,
   },
   devices: {
-    list: (placeId: string) => ['devices', placeId] as const,
-    detail: (placeId: string, deviceId: string) => ['devices', placeId, deviceId] as const,
+    list: (placeId: string) => ["devices", placeId] as const,
+    detail: (placeId: string, deviceId: string) => ["devices", placeId, deviceId] as const,
   },
   sensors: {
-    list: (placeId: string, deviceId: string) => ['sensors', placeId, deviceId] as const,
+    list: (placeId: string, deviceId: string) => ["sensors", placeId, deviceId] as const,
   },
   actuators: {
-    list: (placeId: string, deviceId: string) => ['actuators', placeId, deviceId] as const,
+    list: (placeId: string, deviceId: string) => ["actuators", placeId, deviceId] as const,
   },
   thresholds: {
     list: (placeId: string, deviceId: string, sensorId: string) =>
-      ['thresholds', placeId, deviceId, sensorId] as const,
+      ["thresholds", placeId, deviceId, sensorId] as const,
   },
 } as const;

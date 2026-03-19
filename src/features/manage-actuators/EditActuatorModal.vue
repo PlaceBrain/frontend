@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
-import { useUpdateActuator, useDeleteActuator } from '@/entities/device/api/actuator.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
-import type { Actuator } from '@/entities/device/model/types';
+import { ref, watch, computed } from "vue";
+import { useUpdateActuator, useDeleteActuator } from "@/entities/device/api/actuator.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
+import type { Actuator } from "@/entities/device/model/types";
 
 interface Props {
   open: boolean;
@@ -20,30 +20,33 @@ const emit = defineEmits<{ close: [] }>();
 const name = ref(props.actuator.name);
 const unitLabel = ref(props.actuator.unit_label);
 const precision = ref(String(props.actuator.precision));
-const minValue = ref(String(props.actuator.min_value ?? ''));
-const maxValue = ref(String(props.actuator.max_value ?? ''));
-const step = ref(String(props.actuator.step ?? ''));
-const enumOptionsStr = ref(props.actuator.enum_options?.join(', ') ?? '');
-const error = ref('');
+const minValue = ref(String(props.actuator.min_value ?? ""));
+const maxValue = ref(String(props.actuator.max_value ?? ""));
+const step = ref(String(props.actuator.step ?? ""));
+const enumOptionsStr = ref(props.actuator.enum_options?.join(", ") ?? "");
+const error = ref("");
 
-const isNumber = computed(() => props.actuator.value_type === 'number');
-const isEnum = computed(() => props.actuator.value_type === 'enum');
+const isNumber = computed(() => props.actuator.value_type === "number");
+const isEnum = computed(() => props.actuator.value_type === "enum");
 
-watch(() => props.actuator, (a) => {
-  name.value = a.name;
-  unitLabel.value = a.unit_label;
-  precision.value = String(a.precision);
-  minValue.value = String(a.min_value ?? '');
-  maxValue.value = String(a.max_value ?? '');
-  step.value = String(a.step ?? '');
-  enumOptionsStr.value = a.enum_options?.join(', ') ?? '';
-});
+watch(
+  () => props.actuator,
+  (a) => {
+    name.value = a.name;
+    unitLabel.value = a.unit_label;
+    precision.value = String(a.precision);
+    minValue.value = String(a.min_value ?? "");
+    maxValue.value = String(a.max_value ?? "");
+    step.value = String(a.step ?? "");
+    enumOptionsStr.value = a.enum_options?.join(", ") ?? "";
+  },
+);
 
 const { mutate: update, isPending: isUpdating } = useUpdateActuator(props.placeId, props.deviceId);
 const { mutate: remove, isPending: isRemoving } = useDeleteActuator(props.placeId, props.deviceId);
 
 function handleSubmit() {
-  error.value = '';
+  error.value = "";
   const req: Record<string, unknown> = {
     actuatorId: props.actuator.actuator_id,
     name: name.value,
@@ -56,19 +59,26 @@ function handleSubmit() {
     req.step = parseFloat(step.value) || undefined;
   }
   if (isEnum.value) {
-    req.enum_options = enumOptionsStr.value.split(',').map((s) => s.trim()).filter(Boolean);
+    req.enum_options = enumOptionsStr.value
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
   }
-  update(req as any, {
-    onSuccess: () => emit('close'),
-    onError: (e) => { error.value = getErrorMessage(e); },
+  update(req as Record<string, unknown>, {
+    onSuccess: () => emit("close"),
+    onError: (e) => {
+      error.value = getErrorMessage(e);
+    },
   });
 }
 
 function handleDelete() {
-  if (!confirm('Delete this actuator?')) return;
+  if (!confirm("Delete this actuator?")) return;
   remove(props.actuator.actuator_id, {
-    onSuccess: () => emit('close'),
-    onError: (e) => { error.value = getErrorMessage(e); },
+    onSuccess: () => emit("close"),
+    onError: (e) => {
+      error.value = getErrorMessage(e);
+    },
   });
 }
 </script>
@@ -86,14 +96,10 @@ function handleDelete() {
           <UiInput v-model="step" label="Step" type="number" />
         </div>
       </template>
-      <UiInput
-        v-if="isEnum"
-        v-model="enumOptionsStr"
-        label="Options (comma-separated)"
-      />
+      <UiInput v-if="isEnum" v-model="enumOptionsStr" label="Options (comma-separated)" />
       <p v-if="error" class="text-sm text-[var(--color-danger)]">{{ error }}</p>
       <div class="flex justify-between">
-        <UiButton variant="danger" size="sm" @click="handleDelete" :loading="isRemoving">
+        <UiButton variant="danger" size="sm" :loading="isRemoving" @click="handleDelete">
           Delete
         </UiButton>
         <UiButton type="submit" :loading="isUpdating">Save</UiButton>

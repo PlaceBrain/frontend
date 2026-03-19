@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
-import { api } from '@/shared/api/client';
-import { queryKeys } from '@/shared/api/query-keys';
-import type { Sensor, CreateSensorRequest, Threshold, SetThresholdRequest } from '../model/types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
+import type { Sensor, CreateSensorRequest, Threshold, SetThresholdRequest } from "../model/types";
+import { api } from "@/shared/api/client";
+import { queryKeys } from "@/shared/api/query-keys";
 
 export function useSensors(placeId: string, deviceId: string) {
   return useQuery({

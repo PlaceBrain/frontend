@@ -1,13 +1,13 @@
-import { defineStore } from 'pinia';
-import { ref, watch } from 'vue';
+import { defineStore } from "pinia";
+import { ref, watch } from "vue";
 
-export const useUiStore = defineStore('ui', () => {
-  const theme = ref<'light' | 'dark'>(
-    (localStorage.getItem('theme') as 'light' | 'dark') || 'light',
+export const useUiStore = defineStore("ui", () => {
+  const theme = ref<"light" | "dark">(
+    (localStorage.getItem("theme") as "light" | "dark") || "light",
   );
 
   function applyTheme() {
-    theme.value = theme.value === 'light' ? 'dark' : 'light';
+    theme.value = theme.value === "light" ? "dark" : "light";
   }
 
   function toggleTheme(event?: MouseEvent) {
@@ -27,24 +27,25 @@ export const useUiStore = defineStore('ui', () => {
     transition.ready.then(() => {
       document.documentElement.animate(
         {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${radius}px at ${x}px ${y}px)`,
-          ],
+          clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
         },
         {
           duration: 600,
-          easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-          pseudoElement: '::view-transition-new(root)',
+          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          pseudoElement: "::view-transition-new(root)",
         },
       );
     });
   }
 
-  watch(theme, (value) => {
-    localStorage.setItem('theme', value);
-    document.documentElement.classList.toggle('dark', value === 'dark');
-  }, { immediate: true });
+  watch(
+    theme,
+    (value) => {
+      localStorage.setItem("theme", value);
+      document.documentElement.classList.toggle("dark", value === "dark");
+    },
+    { immediate: true },
+  );
 
   return { theme, toggleTheme };
 });

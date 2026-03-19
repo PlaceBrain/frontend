@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useThresholds, useSetThreshold, useDeleteThreshold } from '@/entities/device/api/sensor.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiSelect from '@/shared/ui/UiSelect.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
-import UiSpinner from '@/shared/ui/UiSpinner.vue';
-import UiBadge from '@/shared/ui/UiBadge.vue';
-import type { Sensor } from '@/entities/device/model/types';
+import { ref } from "vue";
+import {
+  useThresholds,
+  useSetThreshold,
+  useDeleteThreshold,
+} from "@/entities/device/api/sensor.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiSelect from "@/shared/ui/UiSelect.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+import UiBadge from "@/shared/ui/UiBadge.vue";
+import type { Sensor } from "@/entities/device/model/types";
 
 interface Props {
   open: boolean;
@@ -18,38 +22,54 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits<{ close: [] }>();
+defineEmits<{ close: [] }>();
 
-const { data: thresholds, isLoading } = useThresholds(props.placeId, props.deviceId, props.sensor.sensor_id);
-const { mutate: addThreshold, isPending: isAdding } = useSetThreshold(props.placeId, props.deviceId, props.sensor.sensor_id);
-const { mutate: removeThreshold } = useDeleteThreshold(props.placeId, props.deviceId, props.sensor.sensor_id);
+const { data: thresholds, isLoading } = useThresholds(
+  props.placeId,
+  props.deviceId,
+  props.sensor.sensor_id,
+);
+const { mutate: addThreshold, isPending: isAdding } = useSetThreshold(
+  props.placeId,
+  props.deviceId,
+  props.sensor.sensor_id,
+);
+const { mutate: removeThreshold } = useDeleteThreshold(
+  props.placeId,
+  props.deviceId,
+  props.sensor.sensor_id,
+);
 
-const newType = ref('max');
-const newValue = ref('');
-const newSeverity = ref('warning');
-const error = ref('');
+const newType = ref("max");
+const newValue = ref("");
+const newSeverity = ref("warning");
+const error = ref("");
 
 const typeOptions = [
-  { value: 'min', label: 'Min' },
-  { value: 'max', label: 'Max' },
+  { value: "min", label: "Min" },
+  { value: "max", label: "Max" },
 ];
 
 const severityOptions = [
-  { value: 'warning', label: 'Warning' },
-  { value: 'critical', label: 'Critical' },
+  { value: "warning", label: "Warning" },
+  { value: "critical", label: "Critical" },
 ];
 
 function handleAdd() {
-  error.value = '';
+  error.value = "";
   addThreshold(
     {
-      type: newType.value as 'min' | 'max',
+      type: newType.value as "min" | "max",
       value: parseFloat(newValue.value),
-      severity: newSeverity.value as 'warning' | 'critical',
+      severity: newSeverity.value as "warning" | "critical",
     },
     {
-      onSuccess: () => { newValue.value = ''; },
-      onError: (e) => { error.value = getErrorMessage(e); },
+      onSuccess: () => {
+        newValue.value = "";
+      },
+      onError: (e) => {
+        error.value = getErrorMessage(e);
+      },
     },
   );
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoginForm from '@/features/auth/login-form/LoginForm.vue';
+import LoginForm from "@/features/auth/login-form/LoginForm.vue";
 </script>
 
 <template>

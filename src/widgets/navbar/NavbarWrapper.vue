@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useBreakpoint } from '@/shared/lib/use-breakpoint';
-import DesktopNavbar from './DesktopNavbar.vue';
-import MobileNavbar from './MobileNavbar.vue';
+import DesktopNavbar from "./DesktopNavbar.vue";
+import MobileNavbar from "./MobileNavbar.vue";
+import { useBreakpoint } from "@/shared/lib/use-breakpoint";
 
 const { isDesktop } = useBreakpoint();
 </script>

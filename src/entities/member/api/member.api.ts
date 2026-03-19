@@ -1,16 +1,16 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
-import { api } from '@/shared/api/client';
-import { queryKeys } from '@/shared/api/query-keys';
-import type { Member, AddMemberRequest, UpdateMemberRoleRequest } from '../model/types';
-import type { Ref } from 'vue';
-import { computed } from 'vue';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
+import type { Ref } from "vue";
+import { computed } from "vue";
+import type { Member, AddMemberRequest, UpdateMemberRoleRequest } from "../model/types";
+import { api } from "@/shared/api/client";
+import { queryKeys } from "@/shared/api/query-keys";
 
 export function useMembers(placeId: Ref<string> | string) {
-  const id = typeof placeId === 'string' ? placeId : placeId;
+  const id = typeof placeId === "string" ? placeId : placeId;
   return useQuery({
-    queryKey: computed(() => queryKeys.members.list(typeof id === 'string' ? id : id.value)),
+    queryKey: computed(() => queryKeys.members.list(typeof id === "string" ? id : id.value)),
     queryFn: async () => {
-      const resolvedId = typeof id === 'string' ? id : id.value;
+      const resolvedId = typeof id === "string" ? id : id.value;
       const { data } = await api.get<{ members: Member[] }>(`/api/places/${resolvedId}/members`);
       return data.members;
     },

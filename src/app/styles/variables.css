@@ -5,33 +5,37 @@
 }
 
 :root {
-  --color-accent: #6E9EF9;
-  --color-accent-hover: #5A8CE6;
+  --color-accent: #6e9ef9;
+  --color-accent-hover: #5a8ce6;
   --color-accent-light: rgba(110, 158, 249, 0.1);
-  --color-accent-text: #FFFFFF;
-  --color-surface: #FFFFFF;
-  --color-surface-elevated: #F8F9FA;
-  --color-border: #E5E7EB;
+  --color-accent-text: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f8f9fa;
+  --color-border: #e5e7eb;
   --color-text-primary: #111827;
-  --color-text-secondary: #6B7280;
-  --color-danger: #E85A4F;
-  --color-danger-hover: #D14B41;
-  --color-success: #22C55E;
+  --color-text-secondary: #6b7280;
+  --color-danger: #e85a4f;
+  --color-danger-hover: #d14b41;
+  --color-success: #22c55e;
 }
 
 @supports not (view-transition-name: root) {
   *,
   *::before,
   *::after {
-    transition: background-color 400ms ease, color 400ms ease, border-color 400ms ease, fill 400ms ease;
+    transition:
+      background-color 400ms ease,
+      color 400ms ease,
+      border-color 400ms ease,
+      fill 400ms ease;
   }
 }
 
 .dark {
   --color-surface: #000000;
-  --color-surface-elevated: #0A0A0A;
-  --color-border: #1A1A1A;
-  --color-text-primary: #E5E5E5;
+  --color-surface-elevated: #0a0a0a;
+  --color-border: #1a1a1a;
+  --color-text-primary: #e5e5e5;
   --color-text-secondary: #737373;
   --color-accent-light: rgba(110, 158, 249, 0.12);
 }

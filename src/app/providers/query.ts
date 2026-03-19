@@ -1,5 +1,5 @@
-import { VueQueryPlugin, type VueQueryPluginOptions } from '@tanstack/vue-query';
-import type { Plugin } from 'vue';
+import { VueQueryPlugin, type VueQueryPluginOptions } from "@tanstack/vue-query";
+import type { Plugin } from "vue";
 
 const queryPluginOptions: VueQueryPluginOptions = {
   queryClientConfig: {

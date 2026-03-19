@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Member } from '../model/types';
-import { formatRole } from '@/shared/lib/format';
-import UiAvatar from '@/shared/ui/UiAvatar.vue';
-import UiBadge from '@/shared/ui/UiBadge.vue';
+import type { Member } from "../model/types";
+import { formatRole } from "@/shared/lib/format";
+import UiAvatar from "@/shared/ui/UiAvatar.vue";
+import UiBadge from "@/shared/ui/UiBadge.vue";
 
 interface Props {
   member: Member;

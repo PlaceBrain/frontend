@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { usePlace } from '@/entities/place/api/place.api';
-import PlaceTabs from '@/widgets/place-tabs/PlaceTabs.vue';
-import EditPlaceModal from '@/features/edit-place/EditPlaceModal.vue';
-import DeletePlaceButton from '@/features/delete-place/DeletePlaceButton.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
-import UiSpinner from '@/shared/ui/UiSpinner.vue';
-import { useMqtt } from '@/shared/composables/useMqtt';
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { usePlace } from "@/entities/place/api/place.api";
+import PlaceTabs from "@/widgets/place-tabs/PlaceTabs.vue";
+import EditPlaceModal from "@/features/edit-place/EditPlaceModal.vue";
+import DeletePlaceButton from "@/features/delete-place/DeletePlaceButton.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+import { useMqtt } from "@/shared/composables/useMqtt";
 
 const route = useRoute();
 const router = useRouter();
@@ -16,8 +16,8 @@ const { data: place, isLoading } = usePlace(placeId);
 
 const showEditModal = ref(false);
 
-const canManage = computed(() =>
-  place.value?.user_role === 'owner' || place.value?.user_role === 'admin',
+const canManage = computed(
+  () => place.value?.user_role === "owner" || place.value?.user_role === "admin",
 );
 
 const { latestValues } = useMqtt(placeId);
@@ -53,9 +53,7 @@ const { latestValues } = useMqtt(placeId);
             >
               Manage devices
             </UiButton>
-            <UiButton variant="secondary" size="sm" @click="showEditModal = true">
-              Edit
-            </UiButton>
+            <UiButton variant="secondary" size="sm" @click="showEditModal = true"> Edit </UiButton>
             <DeletePlaceButton v-if="place.user_role === 'owner'" :place-id="place.place_id" />
           </div>
         </div>
@@ -63,11 +61,7 @@ const { latestValues } = useMqtt(placeId);
 
       <PlaceTabs :place-id="placeId" :can-manage="canManage" :latest-values="latestValues" />
 
-      <EditPlaceModal
-        :open="showEditModal"
-        :place="place"
-        @close="showEditModal = false"
-      />
+      <EditPlaceModal :open="showEditModal" :place="place" @close="showEditModal = false" />
     </template>
   </div>
 </template>

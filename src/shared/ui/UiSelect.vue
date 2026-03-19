@@ -14,7 +14,7 @@ interface Props {
 defineProps<Props>();
 
 defineEmits<{
-  'update:modelValue': [value: string];
+  "update:modelValue": [value: string];
 }>();
 </script>
 

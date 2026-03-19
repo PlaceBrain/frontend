@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useCreateSensor } from '@/entities/device/api/sensor.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiSelect from '@/shared/ui/UiSelect.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
+import { ref } from "vue";
+import { useCreateSensor } from "@/entities/device/api/sensor.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiSelect from "@/shared/ui/UiSelect.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
 
 interface Props {
   open: boolean;
@@ -16,39 +16,41 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{ close: [] }>();
 
-const key = ref('');
-const name = ref('');
-const valueType = ref('number');
-const unitLabel = ref('');
-const precision = ref('2');
-const error = ref('');
+const key = ref("");
+const name = ref("");
+const valueType = ref("number");
+const unitLabel = ref("");
+const precision = ref("2");
+const error = ref("");
 
 const valueTypeOptions = [
-  { value: 'number', label: 'Number' },
-  { value: 'boolean', label: 'Boolean' },
+  { value: "number", label: "Number" },
+  { value: "boolean", label: "Boolean" },
 ];
 
 const { mutate, isPending } = useCreateSensor(props.placeId, props.deviceId);
 
 function handleSubmit() {
-  error.value = '';
+  error.value = "";
   mutate(
     {
       key: key.value,
       name: name.value,
-      value_type: valueType.value as 'number' | 'boolean',
+      value_type: valueType.value as "number" | "boolean",
       unit_label: unitLabel.value,
       precision: parseInt(precision.value) || 0,
     },
     {
       onSuccess: () => {
-        key.value = '';
-        name.value = '';
-        unitLabel.value = '';
-        precision.value = '2';
-        emit('close');
+        key.value = "";
+        name.value = "";
+        unitLabel.value = "";
+        precision.value = "2";
+        emit("close");
       },
-      onError: (e) => { error.value = getErrorMessage(e); },
+      onError: (e) => {
+        error.value = getErrorMessage(e);
+      },
     },
   );
 }

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 interface Props {
-  variant?: 'default' | 'accent' | 'success' | 'danger';
+  variant?: "default" | "accent" | "success" | "danger";
 }
 
 withDefaults(defineProps<Props>(), {
-  variant: 'default',
+  variant: "default",
 });
 
 const variantClasses = {
-  default: 'bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)]',
-  accent: 'bg-[var(--color-accent-light)] text-[var(--color-accent)]',
-  success: 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400',
-  danger: 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400',
+  default: "bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)]",
+  accent: "bg-[var(--color-accent-light)] text-[var(--color-accent)]",
+  success: "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+  danger: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
 };
 </script>
 

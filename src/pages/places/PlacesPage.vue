@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { usePlaces } from '@/entities/place/api/place.api';
-import type { Place } from '@/entities/place/model/types';
-import PlaceCardGrid from '@/widgets/place-card-grid/PlaceCardGrid.vue';
-import CreatePlaceModal from '@/features/create-place/CreatePlaceModal.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
-import UiSpinner from '@/shared/ui/UiSpinner.vue';
-import UiEmptyState from '@/shared/ui/UiEmptyState.vue';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { usePlaces } from "@/entities/place/api/place.api";
+import type { Place } from "@/entities/place/model/types";
+import PlaceCardGrid from "@/widgets/place-card-grid/PlaceCardGrid.vue";
+import CreatePlaceModal from "@/features/create-place/CreatePlaceModal.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
 
 const router = useRouter();
 const { data: places, isLoading } = usePlaces();
 const showCreateModal = ref(false);
 
 function handleSelect(place: Place) {
-  router.push({ name: 'place-detail', params: { placeId: place.place_id } });
+  router.push({ name: "place-detail", params: { placeId: place.place_id } });
 }
 </script>
 
@@ -22,9 +22,7 @@ function handleSelect(place: Place) {
   <div>
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Places</h1>
-      <UiButton @click="showCreateModal = true">
-        New place
-      </UiButton>
+      <UiButton @click="showCreateModal = true"> New place </UiButton>
     </div>
 
     <div v-if="isLoading" class="flex justify-center py-16">
@@ -41,15 +39,8 @@ function handleSelect(place: Place) {
       </template>
     </UiEmptyState>
 
-    <PlaceCardGrid
-      v-else
-      :places="places"
-      @select="handleSelect"
-    />
+    <PlaceCardGrid v-else :places="places" @select="handleSelect" />
 
-    <CreatePlaceModal
-      :open="showCreateModal"
-      @close="showCreateModal = false"
-    />
+    <CreatePlaceModal :open="showCreateModal" @close="showCreateModal = false" />
   </div>
 </template>

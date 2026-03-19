@@ -2,7 +2,7 @@ export interface Device {
   device_id: string;
   place_id: string;
   name: string;
-  status: 'online' | 'offline';
+  status: "online" | "offline";
   last_seen_at: string | null;
   created_at: string;
   updated_at: string;
@@ -14,7 +14,7 @@ export interface DeviceSummary {
   device_id: string;
   place_id: string;
   name: string;
-  status: 'online' | 'offline';
+  status: "online" | "offline";
   last_seen_at: string | null;
 }
 
@@ -23,7 +23,7 @@ export interface Sensor {
   device_id: string;
   key: string;
   name: string;
-  value_type: 'number' | 'boolean';
+  value_type: "number" | "boolean";
   unit_label: string;
   precision: number;
 }
@@ -33,7 +33,7 @@ export interface Actuator {
   device_id: string;
   key: string;
   name: string;
-  value_type: 'number' | 'boolean' | 'enum';
+  value_type: "number" | "boolean" | "enum";
   unit_label: string;
   precision: number;
   min_value: number | null;
@@ -45,9 +45,9 @@ export interface Actuator {
 export interface Threshold {
   threshold_id: string;
   sensor_id: string;
-  type: 'min' | 'max';
+  type: "min" | "max";
   value: number;
-  severity: 'warning' | 'critical';
+  severity: "warning" | "critical";
 }
 
 export interface CreateDeviceRequest {
@@ -62,7 +62,7 @@ export interface CreateDeviceResponse {
 export interface CreateSensorRequest {
   key: string;
   name: string;
-  value_type: 'number' | 'boolean';
+  value_type: "number" | "boolean";
   unit_label: string;
   precision: number;
 }
@@ -70,7 +70,7 @@ export interface CreateSensorRequest {
 export interface CreateActuatorRequest {
   key: string;
   name: string;
-  value_type: 'number' | 'boolean' | 'enum';
+  value_type: "number" | "boolean" | "enum";
   unit_label: string;
   precision: number;
   min_value?: number;
@@ -80,9 +80,9 @@ export interface CreateActuatorRequest {
 }
 
 export interface SetThresholdRequest {
-  type: 'min' | 'max';
+  type: "min" | "max";
   value: number;
-  severity: 'warning' | 'critical';
+  severity: "warning" | "critical";
 }
 
 export interface SendCommandRequest {

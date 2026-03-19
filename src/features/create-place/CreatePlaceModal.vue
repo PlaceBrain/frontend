@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useCreatePlace } from '@/entities/place/api/place.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
+import { ref } from "vue";
+import { useCreatePlace } from "@/entities/place/api/place.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
 
 interface Props {
   open: boolean;
@@ -16,21 +16,21 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const name = ref('');
-const description = ref('');
-const error = ref('');
+const name = ref("");
+const description = ref("");
+const error = ref("");
 
 const { mutate, isPending } = useCreatePlace();
 
 function handleSubmit() {
-  error.value = '';
+  error.value = "";
   mutate(
     { name: name.value, description: description.value || undefined },
     {
       onSuccess: () => {
-        name.value = '';
-        description.value = '';
-        emit('close');
+        name.value = "";
+        description.value = "";
+        emit("close");
       },
       onError: (e) => {
         error.value = getErrorMessage(e);

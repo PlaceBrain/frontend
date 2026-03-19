@@ -1,1 +1,1 @@
-export type PlaceRole = 'owner' | 'admin' | 'viewer' | 'unspecified';
+export type PlaceRole = "owner" | "admin" | "viewer" | "unspecified";

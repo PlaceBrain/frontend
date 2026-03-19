@@ -1,6 +1,6 @@
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from "vue";
 
-export function useBreakpoint(query = '(min-width: 768px)') {
+export function useBreakpoint(query = "(min-width: 768px)") {
   const matches = ref(false);
 
   let mediaQuery: MediaQueryList | null = null;
@@ -12,11 +12,11 @@ export function useBreakpoint(query = '(min-width: 768px)') {
   onMounted(() => {
     mediaQuery = window.matchMedia(query);
     matches.value = mediaQuery.matches;
-    mediaQuery.addEventListener('change', handler);
+    mediaQuery.addEventListener("change", handler);
   });
 
   onUnmounted(() => {
-    mediaQuery?.removeEventListener('change', handler);
+    mediaQuery?.removeEventListener("change", handler);
   });
 
   return { isDesktop: matches };

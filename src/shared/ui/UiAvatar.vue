@@ -1,25 +1,25 @@
 <script setup lang="ts">
 interface Props {
   name: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 'md',
+  size: "md",
 });
 
 const sizeClasses = {
-  sm: 'h-7 w-7 text-xs',
-  md: 'h-9 w-9 text-sm',
-  lg: 'h-12 w-12 text-base',
+  sm: "h-7 w-7 text-xs",
+  md: "h-9 w-9 text-sm",
+  lg: "h-12 w-12 text-base",
 };
 
 function getInitials(name: string): string {
   return name
     .split(/\s+/)
     .slice(0, 2)
-    .map((s) => s[0]?.toUpperCase() ?? '')
-    .join('');
+    .map((s) => s[0]?.toUpperCase() ?? "")
+    .join("");
 }
 </script>
 

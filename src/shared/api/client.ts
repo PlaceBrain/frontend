@@ -1,12 +1,12 @@
-import axios from 'axios';
-import { config } from '@/shared/config';
+import axios from "axios";
+import { config } from "@/shared/config";
 
 export const api = axios.create({
   baseURL: config.apiBaseUrl,
 });
 
 api.interceptors.request.use((reqConfig) => {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem("access_token");
   if (token) {
     reqConfig.headers.Authorization = `Bearer ${token}`;
   }
@@ -35,7 +35,7 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const isAuthEndpoint = originalRequest.url?.startsWith('/api/auth/');
+    const isAuthEndpoint = originalRequest.url?.startsWith("/api/auth/");
 
     if (error.response?.status !== 401 || originalRequest._retry || isAuthEndpoint) {
       return Promise.reject(error);
@@ -54,9 +54,9 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const refreshToken = localStorage.getItem('refresh_token');
+      const refreshToken = localStorage.getItem("refresh_token");
       if (!refreshToken) {
-        throw new Error('No refresh token');
+        throw new Error("No refresh token");
       }
 
       const { data } = await axios.post<{ access_token: string; refresh_token: string }>(
@@ -64,8 +64,8 @@ api.interceptors.response.use(
         { refresh_token: refreshToken },
       );
 
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
 
       processQueue(null, data.access_token);
 
@@ -73,9 +73,9 @@ api.interceptors.response.use(
       return api(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      window.location.href = '/login';
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      window.location.href = "/login";
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

@@ -1,4 +1,4 @@
-import type { PlaceRole } from '@/shared/types';
+import type { PlaceRole } from "@/shared/types";
 
 export interface Member {
   user_id: string;

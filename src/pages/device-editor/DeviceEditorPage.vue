@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UiEmptyState from '@/shared/ui/UiEmptyState.vue';
+import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
 </script>
 
 <template>

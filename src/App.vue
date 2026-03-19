@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUiStore } from '@/shared/stores/ui.store';
+import { useUiStore } from "@/shared/stores/ui.store";
 
 // Initialize theme on app load
 useUiStore();

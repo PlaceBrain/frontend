@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useCreateActuator } from '@/entities/device/api/actuator.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiSelect from '@/shared/ui/UiSelect.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
+import { ref, computed } from "vue";
+import { useCreateActuator } from "@/entities/device/api/actuator.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiSelect from "@/shared/ui/UiSelect.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
 
 interface Props {
   open: boolean;
@@ -16,30 +16,30 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{ close: [] }>();
 
-const key = ref('');
-const name = ref('');
-const valueType = ref('boolean');
-const unitLabel = ref('');
-const precision = ref('0');
-const minValue = ref('0');
-const maxValue = ref('100');
-const step = ref('1');
-const enumOptionsStr = ref('');
-const error = ref('');
+const key = ref("");
+const name = ref("");
+const valueType = ref("boolean");
+const unitLabel = ref("");
+const precision = ref("0");
+const minValue = ref("0");
+const maxValue = ref("100");
+const step = ref("1");
+const enumOptionsStr = ref("");
+const error = ref("");
 
 const valueTypeOptions = [
-  { value: 'boolean', label: 'Boolean (on/off)' },
-  { value: 'number', label: 'Number (slider)' },
-  { value: 'enum', label: 'Enum (select)' },
+  { value: "boolean", label: "Boolean (on/off)" },
+  { value: "number", label: "Number (slider)" },
+  { value: "enum", label: "Enum (select)" },
 ];
 
-const isNumber = computed(() => valueType.value === 'number');
-const isEnum = computed(() => valueType.value === 'enum');
+const isNumber = computed(() => valueType.value === "number");
+const isEnum = computed(() => valueType.value === "enum");
 
 const { mutate, isPending } = useCreateActuator(props.placeId, props.deviceId);
 
 function handleSubmit() {
-  error.value = '';
+  error.value = "";
   const req: Record<string, unknown> = {
     key: key.value,
     name: name.value,
@@ -53,16 +53,21 @@ function handleSubmit() {
     req.step = parseFloat(step.value) || 1;
   }
   if (isEnum.value) {
-    req.enum_options = enumOptionsStr.value.split(',').map((s) => s.trim()).filter(Boolean);
+    req.enum_options = enumOptionsStr.value
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
   }
-  mutate(req as any, {
+  mutate(req as Record<string, unknown>, {
     onSuccess: () => {
-      key.value = '';
-      name.value = '';
-      enumOptionsStr.value = '';
-      emit('close');
+      key.value = "";
+      name.value = "";
+      enumOptionsStr.value = "";
+      emit("close");
     },
-    onError: (e) => { error.value = getErrorMessage(e); },
+    onError: (e) => {
+      error.value = getErrorMessage(e);
+    },
   });
 }
 </script>

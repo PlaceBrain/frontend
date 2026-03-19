@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useUpdateDevice } from '@/entities/device/api/device.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
-import type { Device } from '@/entities/device/model/types';
+import { ref, watch } from "vue";
+import { useUpdateDevice } from "@/entities/device/api/device.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
+import type { Device } from "@/entities/device/model/types";
 
 interface Props {
   open: boolean;
@@ -17,19 +17,26 @@ const props = defineProps<Props>();
 const emit = defineEmits<{ close: [] }>();
 
 const name = ref(props.device.name);
-const error = ref('');
+const error = ref("");
 
-watch(() => props.device, (d) => { name.value = d.name; });
+watch(
+  () => props.device,
+  (d) => {
+    name.value = d.name;
+  },
+);
 
 const { mutate, isPending } = useUpdateDevice(props.placeId, props.device.device_id);
 
 function handleSubmit() {
-  error.value = '';
+  error.value = "";
   mutate(
     { name: name.value },
     {
-      onSuccess: () => emit('close'),
-      onError: (e) => { error.value = getErrorMessage(e); },
+      onSuccess: () => emit("close"),
+      onError: (e) => {
+        error.value = getErrorMessage(e);
+      },
     },
   );
 }

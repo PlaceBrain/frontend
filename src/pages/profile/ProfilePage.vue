@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useCurrentUser } from '@/entities/user/api/user.api';
-import LogoutButton from '@/features/auth/logout-button/LogoutButton.vue';
-import ThemeToggle from '@/features/theme-toggle/ThemeToggle.vue';
-import UiSpinner from '@/shared/ui/UiSpinner.vue';
-import UiBadge from '@/shared/ui/UiBadge.vue';
-import { useUiStore } from '@/shared/stores/ui.store';
+import { useCurrentUser } from "@/entities/user/api/user.api";
+import LogoutButton from "@/features/auth/logout-button/LogoutButton.vue";
+import ThemeToggle from "@/features/theme-toggle/ThemeToggle.vue";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+import UiBadge from "@/shared/ui/UiBadge.vue";
+import { useUiStore } from "@/shared/stores/ui.store";
 
 const { data: user, isLoading } = useCurrentUser();
 const ui = useUiStore();
@@ -33,7 +33,7 @@ const ui = useUiStore();
           <div>
             <p class="text-xs text-[var(--color-text-secondary)]">Status</p>
             <UiBadge :variant="user.is_verified ? 'success' : 'default'">
-              {{ user.is_verified ? 'Verified' : 'Not verified' }}
+              {{ user.is_verified ? "Verified" : "Not verified" }}
             </UiBadge>
           </div>
         </div>
@@ -45,7 +45,9 @@ const ui = useUiStore();
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-[var(--color-text-primary)]">Appearance</p>
-              <p class="text-xs text-[var(--color-text-secondary)]">{{ ui.theme === 'light' ? 'Light' : 'Dark' }} mode</p>
+              <p class="text-xs text-[var(--color-text-secondary)]">
+                {{ ui.theme === "light" ? "Light" : "Dark" }} mode
+              </p>
             </div>
             <ThemeToggle />
           </div>

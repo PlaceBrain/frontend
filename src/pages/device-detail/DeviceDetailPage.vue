@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useDevice, useDeleteDevice, useRegenerateToken } from '@/entities/device/api/device.api';
-import AddSensorModal from '@/features/manage-sensors/AddSensorModal.vue';
-import EditSensorModal from '@/features/manage-sensors/EditSensorModal.vue';
-import ManageThresholdsModal from '@/features/manage-sensors/ManageThresholdsModal.vue';
-import AddActuatorModal from '@/features/manage-actuators/AddActuatorModal.vue';
-import EditActuatorModal from '@/features/manage-actuators/EditActuatorModal.vue';
-import EditDeviceModal from '@/features/manage-devices/EditDeviceModal.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
-import UiSpinner from '@/shared/ui/UiSpinner.vue';
-import UiBadge from '@/shared/ui/UiBadge.vue';
-import UiEmptyState from '@/shared/ui/UiEmptyState.vue';
-import type { Sensor, Actuator } from '@/entities/device/model/types';
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useDevice, useDeleteDevice, useRegenerateToken } from "@/entities/device/api/device.api";
+import AddSensorModal from "@/features/manage-sensors/AddSensorModal.vue";
+import EditSensorModal from "@/features/manage-sensors/EditSensorModal.vue";
+import ManageThresholdsModal from "@/features/manage-sensors/ManageThresholdsModal.vue";
+import AddActuatorModal from "@/features/manage-actuators/AddActuatorModal.vue";
+import EditActuatorModal from "@/features/manage-actuators/EditActuatorModal.vue";
+import EditDeviceModal from "@/features/manage-devices/EditDeviceModal.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+import UiBadge from "@/shared/ui/UiBadge.vue";
+import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
+import type { Sensor, Actuator } from "@/entities/device/model/types";
 
 const route = useRoute();
 const router = useRouter();
@@ -21,7 +21,10 @@ const deviceId = computed(() => route.params.deviceId as string);
 
 const { data: device, isLoading } = useDevice(placeId, deviceId);
 const { mutate: deleteDevice, isPending: isDeleting } = useDeleteDevice(placeId.value);
-const { mutate: regenerateToken, isPending: isRegenerating } = useRegenerateToken(placeId.value, deviceId.value);
+const { mutate: regenerateToken, isPending: isRegenerating } = useRegenerateToken(
+  placeId.value,
+  deviceId.value,
+);
 
 const showEditModal = ref(false);
 const showAddSensorModal = ref(false);
@@ -32,14 +35,14 @@ const thresholdSensor = ref<Sensor | null>(null);
 const newToken = ref<string | null>(null);
 
 function handleDelete() {
-  if (!confirm('Are you sure you want to delete this device?')) return;
+  if (!confirm("Are you sure you want to delete this device?")) return;
   deleteDevice(deviceId.value, {
-    onSuccess: () => router.push({ name: 'devices-list', params: { placeId: placeId.value } }),
+    onSuccess: () => router.push({ name: "devices-list", params: { placeId: placeId.value } }),
   });
 }
 
 function handleRegenerate() {
-  if (!confirm('Regenerate token? The old token will stop working.')) return;
+  if (!confirm("Regenerate token? The old token will stop working.")) return;
   regenerateToken(undefined, {
     onSuccess: (token) => {
       newToken.value = token;
@@ -82,20 +85,32 @@ function copyToken() {
         </div>
         <div class="flex items-center gap-2">
           <UiButton variant="secondary" size="sm" @click="showEditModal = true">Edit</UiButton>
-          <UiButton variant="secondary" size="sm" @click="handleRegenerate" :loading="isRegenerating">
+          <UiButton
+            variant="secondary"
+            size="sm"
+            :loading="isRegenerating"
+            @click="handleRegenerate"
+          >
             Regenerate token
           </UiButton>
-          <UiButton variant="danger" size="sm" @click="handleDelete" :loading="isDeleting">
+          <UiButton variant="danger" size="sm" :loading="isDeleting" @click="handleDelete">
             Delete
           </UiButton>
         </div>
       </div>
 
       <!-- Token display (one-time) -->
-      <div v-if="newToken" class="mb-6 p-4 rounded-lg border border-[var(--color-accent)] bg-[var(--color-accent)]/5">
-        <p class="text-sm font-medium text-[var(--color-text-primary)] mb-2">New device token (save it now, shown once):</p>
+      <div
+        v-if="newToken"
+        class="mb-6 p-4 rounded-lg border border-[var(--color-accent)] bg-[var(--color-accent)]/5"
+      >
+        <p class="text-sm font-medium text-[var(--color-text-primary)] mb-2">
+          New device token (save it now, shown once):
+        </p>
         <div class="flex items-center gap-2">
-          <code class="flex-1 text-sm font-mono bg-[var(--color-surface-elevated)] px-3 py-2 rounded border border-[var(--color-border)] break-all">
+          <code
+            class="flex-1 text-sm font-mono bg-[var(--color-surface-elevated)] px-3 py-2 rounded border border-[var(--color-border)] break-all"
+          >
             {{ newToken }}
           </code>
           <UiButton size="sm" variant="secondary" @click="copyToken">Copy</UiButton>
@@ -169,7 +184,7 @@ function copyToken() {
                   &middot; {{ actuator.min_value }}–{{ actuator.max_value }}
                 </template>
                 <template v-if="actuator.value_type === 'enum'">
-                  &middot; {{ actuator.enum_options?.join(', ') }}
+                  &middot; {{ actuator.enum_options?.join(", ") }}
                 </template>
               </div>
             </div>

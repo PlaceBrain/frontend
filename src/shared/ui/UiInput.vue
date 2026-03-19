@@ -9,13 +9,15 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  type: 'text',
-  placeholder: '',
+  label: undefined,
+  type: "text",
+  placeholder: "",
+  error: undefined,
   disabled: false,
 });
 
 defineEmits<{
-  'update:modelValue': [value: string];
+  "update:modelValue": [value: string];
 }>();
 </script>
 
@@ -35,9 +37,7 @@ defineEmits<{
         'placeholder:text-[var(--color-text-secondary)]',
         'focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent',
         'disabled:opacity-50 disabled:cursor-not-allowed',
-        error
-          ? 'border-[var(--color-danger)]'
-          : 'border-[var(--color-border)]',
+        error ? 'border-[var(--color-danger)]' : 'border-[var(--color-border)]',
       ]"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />

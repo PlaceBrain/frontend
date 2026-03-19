@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useDevicesWithDetails } from '@/entities/device/api/device.api';
-import { api } from '@/shared/api/client';
-import type { Actuator } from '@/entities/device/model/types';
-import UiSpinner from '@/shared/ui/UiSpinner.vue';
-import UiEmptyState from '@/shared/ui/UiEmptyState.vue';
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useDevicesWithDetails } from "@/entities/device/api/device.api";
+import { api } from "@/shared/api/client";
+import type { Actuator } from "@/entities/device/model/types";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
 
 interface Props {
   placeId: string;
@@ -36,7 +36,7 @@ const actuatorRows = computed<ActuatorRow[]>(() => {
 });
 
 function navigateToDevice(deviceId: string) {
-  router.push({ name: 'device-detail', params: { placeId: props.placeId, deviceId } });
+  router.push({ name: "device-detail", params: { placeId: props.placeId, deviceId } });
 }
 
 const pendingCommands = ref<Set<string>>(new Set());
@@ -112,12 +112,20 @@ function getLiveValue(deviceId: string, key: string) {
           <template v-if="row.actuator.value_type === 'boolean'">
             <button
               class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
-              :class="getLiveValue(row.deviceId, row.actuator.key)?.value ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-border)]'"
+              :class="
+                getLiveValue(row.deviceId, row.actuator.key)?.value
+                  ? 'bg-[var(--color-accent)]'
+                  : 'bg-[var(--color-border)]'
+              "
               @click="handleToggle(row, !!getLiveValue(row.deviceId, row.actuator.key)?.value)"
             >
               <span
                 class="inline-block h-4 w-4 rounded-full bg-white transition-transform"
-                :class="getLiveValue(row.deviceId, row.actuator.key)?.value ? 'translate-x-6' : 'translate-x-1'"
+                :class="
+                  getLiveValue(row.deviceId, row.actuator.key)?.value
+                    ? 'translate-x-6'
+                    : 'translate-x-1'
+                "
               />
             </button>
           </template>
@@ -126,8 +134,14 @@ function getLiveValue(deviceId: string, key: string) {
           <template v-else-if="row.actuator.value_type === 'number'">
             <div class="flex items-center gap-2">
               <span class="text-xs text-[var(--color-text-secondary)] font-mono w-12 text-right">
-                {{ getLiveValue(row.deviceId, row.actuator.key)?.value?.toFixed(row.actuator.precision) ?? '--' }}
-                <span v-if="row.actuator.unit_label" class="ml-0.5">{{ row.actuator.unit_label }}</span>
+                {{
+                  getLiveValue(row.deviceId, row.actuator.key)?.value?.toFixed(
+                    row.actuator.precision,
+                  ) ?? "--"
+                }}
+                <span v-if="row.actuator.unit_label" class="ml-0.5">{{
+                  row.actuator.unit_label
+                }}</span>
               </span>
               <input
                 type="range"
@@ -135,7 +149,9 @@ function getLiveValue(deviceId: string, key: string) {
                 :min="row.actuator.min_value ?? 0"
                 :max="row.actuator.max_value ?? 100"
                 :step="row.actuator.step ?? 1"
-                :value="getLiveValue(row.deviceId, row.actuator.key)?.value ?? row.actuator.min_value ?? 0"
+                :value="
+                  getLiveValue(row.deviceId, row.actuator.key)?.value ?? row.actuator.min_value ?? 0
+                "
                 @change="handleSlider(row, $event)"
               />
             </div>
@@ -160,8 +176,17 @@ function getLiveValue(deviceId: string, key: string) {
             title="Device settings"
             @click="navigateToDevice(row.deviceId)"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                clip-rule="evenodd"
+              />
             </svg>
           </button>
         </div>

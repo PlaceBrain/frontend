@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Place } from '@/entities/place/model/types';
-import PlaceCard from '@/entities/place/ui/PlaceCard.vue';
+import type { Place } from "@/entities/place/model/types";
+import PlaceCard from "@/entities/place/ui/PlaceCard.vue";
 
 interface Props {
   places: Place[];

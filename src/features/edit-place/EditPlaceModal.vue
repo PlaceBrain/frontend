@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import type { Place } from '@/entities/place/model/types';
-import { useUpdatePlace } from '@/entities/place/api/place.api';
-import { getErrorMessage } from '@/shared/api/types';
-import UiModal from '@/shared/ui/UiModal.vue';
-import UiInput from '@/shared/ui/UiInput.vue';
-import UiButton from '@/shared/ui/UiButton.vue';
+import { ref, watch } from "vue";
+import type { Place } from "@/entities/place/model/types";
+import { useUpdatePlace } from "@/entities/place/api/place.api";
+import { getErrorMessage } from "@/shared/api/types";
+import UiModal from "@/shared/ui/UiModal.vue";
+import UiInput from "@/shared/ui/UiInput.vue";
+import UiButton from "@/shared/ui/UiButton.vue";
 
 interface Props {
   open: boolean;
@@ -20,22 +20,22 @@ const emit = defineEmits<{
 
 const name = ref(props.place.name);
 const description = ref(props.place.description);
-const error = ref('');
+const error = ref("");
 
 watch([() => props.place, () => props.open], ([p]) => {
   name.value = p.name;
   description.value = p.description;
-  error.value = '';
+  error.value = "";
 });
 
 const { mutate, isPending } = useUpdatePlace(props.place.place_id);
 
 function handleSubmit() {
-  error.value = '';
+  error.value = "";
   mutate(
     { name: name.value, description: description.value },
     {
-      onSuccess: () => emit('close'),
+      onSuccess: () => emit("close"),
       onError: (e) => {
         error.value = getErrorMessage(e);
       },
