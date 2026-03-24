@@ -20,7 +20,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const containerRef = ref<HTMLElement | null>(null);
-const { createChart, appendPoint } = useChart(containerRef, {
+const { chart, createChart, appendPoint, destroy } = useChart(containerRef, {
   title: props.sensor.name || props.sensor.key,
   unit: props.sensor.unit_label,
   precision: props.sensor.precision,
@@ -73,7 +73,10 @@ watch(seriesData, () => {
 watch(
   () => props.isLive,
   async (live) => {
-    if (!live) return;
+    if (!live) {
+      destroy();
+      return;
+    }
     // Load last 1h as initial data
     const now = new Date();
     const from = new Date(now.getTime() - 3600_000);
@@ -96,14 +99,12 @@ watch(
         );
         const values = series.raw_points.map((p: { value: number }) => p.value);
         createChart([timestamps, values], "raw");
-      } else {
-        createChart([[], []], "raw");
       }
+      // If no data, don't create chart — appendPoint will handle first point
     } catch {
-      createChart([[], []], "raw");
+      // Auth error or network issue — chart stays empty until MQTT provides data
     }
   },
-  { immediate: true },
 );
 
 // Append MQTT points in live mode
@@ -115,8 +116,13 @@ watch(
     return deviceMap.get(props.sensor.key) ?? null;
   },
   (liveVal) => {
-    if (liveVal && props.isLive) {
-      appendPoint(new Date(liveVal.timestamp).getTime() / 1000, liveVal.value);
+    if (!liveVal || !props.isLive) return;
+    const ts = new Date(liveVal.timestamp).getTime() / 1000;
+    if (!chart.value) {
+      // First MQTT point — bootstrap chart
+      createChart([[ts], [liveVal.value]], "raw");
+    } else {
+      appendPoint(ts, liveVal.value);
     }
   },
 );
