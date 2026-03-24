@@ -3,6 +3,7 @@ import { ref, watch, computed } from "vue";
 import { useUpdateActuator, useDeleteActuator } from "@/entities/device/api/actuator.api";
 import { getErrorMessage } from "@/shared/api/types";
 import UiModal from "@/shared/ui/UiModal.vue";
+import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 import type { Actuator } from "@/entities/device/model/types";
@@ -25,6 +26,7 @@ const maxValue = ref(String(props.actuator.max_value ?? ""));
 const step = ref(String(props.actuator.step ?? ""));
 const enumOptionsStr = ref(props.actuator.enum_options?.join(", ") ?? "");
 const error = ref("");
+const showDeleteConfirm = ref(false);
 
 const isNumber = computed(() => props.actuator.value_type === "number");
 const isEnum = computed(() => props.actuator.value_type === "enum");
@@ -45,9 +47,20 @@ watch(
 const { mutate: update, isPending: isUpdating } = useUpdateActuator(props.placeId, props.deviceId);
 const { mutate: remove, isPending: isRemoving } = useDeleteActuator(props.placeId, props.deviceId);
 
+interface UpdateActuatorPayload {
+  actuatorId: string;
+  name: string;
+  unit_label: string;
+  precision: number;
+  min_value?: number;
+  max_value?: number;
+  step?: number;
+  enum_options?: string[];
+}
+
 function handleSubmit() {
   error.value = "";
-  const req: Record<string, unknown> = {
+  const req: UpdateActuatorPayload = {
     actuatorId: props.actuator.actuator_id,
     name: name.value,
     unit_label: unitLabel.value,
@@ -64,7 +77,7 @@ function handleSubmit() {
       .map((s) => s.trim())
       .filter(Boolean);
   }
-  update(req as Record<string, unknown>, {
+  update(req, {
     onSuccess: () => emit("close"),
     onError: (e) => {
       error.value = getErrorMessage(e);
@@ -73,7 +86,6 @@ function handleSubmit() {
 }
 
 function handleDelete() {
-  if (!confirm("Delete this actuator?")) return;
   remove(props.actuator.actuator_id, {
     onSuccess: () => emit("close"),
     onError: (e) => {
@@ -99,11 +111,25 @@ function handleDelete() {
       <UiInput v-if="isEnum" v-model="enumOptionsStr" label="Options (comma-separated)" />
       <p v-if="error" class="text-sm text-[var(--color-danger)]">{{ error }}</p>
       <div class="flex justify-between">
-        <UiButton variant="danger" size="sm" :loading="isRemoving" @click="handleDelete">
+        <UiButton
+          variant="danger"
+          size="sm"
+          :loading="isRemoving"
+          @click="showDeleteConfirm = true"
+        >
           Delete
         </UiButton>
         <UiButton type="submit" :loading="isUpdating">Save</UiButton>
       </div>
     </form>
   </UiModal>
+  <UiConfirmDialog
+    :open="showDeleteConfirm"
+    title="Delete actuator"
+    message="Are you sure you want to delete this actuator?"
+    confirm-label="Delete"
+    :loading="isRemoving"
+    @confirm="handleDelete"
+    @cancel="showDeleteConfirm = false"
+  />
 </template>

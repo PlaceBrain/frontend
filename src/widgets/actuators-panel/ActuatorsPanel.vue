@@ -111,6 +111,9 @@ function getLiveValue(deviceId: string, key: string) {
           <!-- Boolean toggle -->
           <template v-if="row.actuator.value_type === 'boolean'">
             <button
+              role="switch"
+              :aria-checked="!!getLiveValue(row.deviceId, row.actuator.key)?.value"
+              :aria-label="`Toggle ${row.actuator.name || row.actuator.key}`"
               class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
               :class="
                 getLiveValue(row.deviceId, row.actuator.key)?.value
@@ -145,6 +148,7 @@ function getLiveValue(deviceId: string, key: string) {
               </span>
               <input
                 type="range"
+                :aria-label="`${row.actuator.name || row.actuator.key} value`"
                 class="w-24 accent-[var(--color-accent)]"
                 :min="row.actuator.min_value ?? 0"
                 :max="row.actuator.max_value ?? 100"
@@ -174,6 +178,7 @@ function getLiveValue(deviceId: string, key: string) {
             v-if="canManage"
             class="p-1 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
             title="Device settings"
+            aria-label="Device settings"
             @click="navigateToDevice(row.deviceId)"
           >
             <svg

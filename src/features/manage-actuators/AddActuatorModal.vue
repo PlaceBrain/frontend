@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useCreateActuator } from "@/entities/device/api/actuator.api";
+import type { CreateActuatorRequest } from "@/entities/device/model/types";
 import { getErrorMessage } from "@/shared/api/types";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
@@ -40,10 +41,10 @@ const { mutate, isPending } = useCreateActuator(props.placeId, props.deviceId);
 
 function handleSubmit() {
   error.value = "";
-  const req: Record<string, unknown> = {
+  const req: CreateActuatorRequest = {
     key: key.value,
     name: name.value,
-    value_type: valueType.value,
+    value_type: valueType.value as CreateActuatorRequest["value_type"],
     unit_label: unitLabel.value,
     precision: parseInt(precision.value) || 0,
   };
@@ -58,7 +59,7 @@ function handleSubmit() {
       .map((s) => s.trim())
       .filter(Boolean);
   }
-  mutate(req as Record<string, unknown>, {
+  mutate(req, {
     onSuccess: () => {
       key.value = "";
       name.value = "";

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUiStore } from "@/shared/stores/ui.store";
+import UiToastContainer from "@/shared/ui/UiToastContainer.vue";
 
 // Initialize theme on app load
 useUiStore();
@@ -7,4 +8,5 @@ useUiStore();
 
 <template>
   <RouterView />
+  <UiToastContainer />
 </template>

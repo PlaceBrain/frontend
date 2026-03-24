@@ -48,10 +48,7 @@ watch(
     <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
       <router-link to="/" class="flex items-center gap-2 text-[var(--color-text-primary)]">
         <LogoIcon size="2rem" />
-        <span
-          class="text-lg font-semibold text-[var(--color-text-primary)]"
-          style="font-family: &quot;Space Grotesk&quot;, system-ui, sans-serif"
-        >
+        <span class="text-lg font-semibold text-[var(--color-text-primary)] font-heading">
           PlaceBrain
         </span>
       </router-link>

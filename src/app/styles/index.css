@@ -20,3 +20,9 @@
     font-family: "Space Grotesk", system-ui, sans-serif;
   }
 }
+
+@layer utilities {
+  .font-heading {
+    font-family: "Space Grotesk", system-ui, sans-serif;
+  }
+}

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 interface Props {
   modelValue: string;
   label?: string;
@@ -6,31 +8,40 @@ interface Props {
   placeholder?: string;
   error?: string;
   disabled?: boolean;
+  autocomplete?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   label: undefined,
   type: "text",
   placeholder: "",
   error: undefined,
   disabled: false,
+  autocomplete: undefined,
 });
 
 defineEmits<{
   "update:modelValue": [value: string];
 }>();
+
+const inputId = computed(() => {
+  if (!props.label) return undefined;
+  return `input-${props.label.toLowerCase().replace(/\s+/g, "-")}`;
+});
 </script>
 
 <template>
   <div class="flex flex-col gap-1.5">
-    <label v-if="label" class="text-sm font-medium text-[var(--color-text-primary)]">
+    <label v-if="label" :for="inputId" class="text-sm font-medium text-[var(--color-text-primary)]">
       {{ label }}
     </label>
     <input
+      :id="inputId"
       :type="type"
       :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
+      :autocomplete="autocomplete"
       :class="[
         'w-full rounded-lg border px-3 py-2 text-sm transition-colors duration-150',
         'bg-[var(--color-surface)] text-[var(--color-text-primary)]',

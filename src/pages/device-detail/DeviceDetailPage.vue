@@ -9,6 +9,7 @@ import AddActuatorModal from "@/features/manage-actuators/AddActuatorModal.vue";
 import EditActuatorModal from "@/features/manage-actuators/EditActuatorModal.vue";
 import EditDeviceModal from "@/features/manage-devices/EditDeviceModal.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
+import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
 import UiSpinner from "@/shared/ui/UiSpinner.vue";
 import UiBadge from "@/shared/ui/UiBadge.vue";
 import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
@@ -33,19 +34,20 @@ const editSensor = ref<Sensor | null>(null);
 const editActuator = ref<Actuator | null>(null);
 const thresholdSensor = ref<Sensor | null>(null);
 const newToken = ref<string | null>(null);
+const showDeleteConfirm = ref(false);
+const showRegenerateConfirm = ref(false);
 
 function handleDelete() {
-  if (!confirm("Are you sure you want to delete this device?")) return;
   deleteDevice(deviceId.value, {
     onSuccess: () => router.push({ name: "devices-list", params: { placeId: placeId.value } }),
   });
 }
 
 function handleRegenerate() {
-  if (!confirm("Regenerate token? The old token will stop working.")) return;
   regenerateToken(undefined, {
     onSuccess: (token) => {
       newToken.value = token;
+      showRegenerateConfirm.value = false;
     },
   });
 }
@@ -89,11 +91,16 @@ function copyToken() {
             variant="secondary"
             size="sm"
             :loading="isRegenerating"
-            @click="handleRegenerate"
+            @click="showRegenerateConfirm = true"
           >
             Regenerate token
           </UiButton>
-          <UiButton variant="danger" size="sm" :loading="isDeleting" @click="handleDelete">
+          <UiButton
+            variant="danger"
+            size="sm"
+            :loading="isDeleting"
+            @click="showDeleteConfirm = true"
+          >
             Delete
           </UiButton>
         </div>
@@ -235,6 +242,25 @@ function copyToken() {
         :device-id="deviceId"
         :actuator="editActuator"
         @close="editActuator = null"
+      />
+      <UiConfirmDialog
+        :open="showDeleteConfirm"
+        title="Delete device"
+        message="Are you sure you want to delete this device? This action cannot be undone."
+        confirm-label="Delete"
+        :loading="isDeleting"
+        @confirm="handleDelete"
+        @cancel="showDeleteConfirm = false"
+      />
+      <UiConfirmDialog
+        :open="showRegenerateConfirm"
+        title="Regenerate token"
+        message="Regenerate token? The old token will stop working immediately."
+        confirm-label="Regenerate"
+        variant="primary"
+        :loading="isRegenerating"
+        @confirm="handleRegenerate"
+        @cancel="showRegenerateConfirm = false"
       />
     </template>
   </div>

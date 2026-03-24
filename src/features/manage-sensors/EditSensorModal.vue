@@ -3,6 +3,7 @@ import { ref, watch } from "vue";
 import { useUpdateSensor, useDeleteSensor } from "@/entities/device/api/sensor.api";
 import { getErrorMessage } from "@/shared/api/types";
 import UiModal from "@/shared/ui/UiModal.vue";
+import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 import type { Sensor } from "@/entities/device/model/types";
@@ -21,6 +22,7 @@ const name = ref(props.sensor.name);
 const unitLabel = ref(props.sensor.unit_label);
 const precision = ref(String(props.sensor.precision));
 const error = ref("");
+const showDeleteConfirm = ref(false);
 
 watch(
   () => props.sensor,
@@ -53,7 +55,6 @@ function handleSubmit() {
 }
 
 function handleDelete() {
-  if (!confirm("Delete this sensor?")) return;
   remove(props.sensor.sensor_id, {
     onSuccess: () => emit("close"),
     onError: (e) => {
@@ -71,11 +72,25 @@ function handleDelete() {
       <UiInput v-model="precision" label="Precision" type="number" />
       <p v-if="error" class="text-sm text-[var(--color-danger)]">{{ error }}</p>
       <div class="flex justify-between">
-        <UiButton variant="danger" size="sm" :loading="isRemoving" @click="handleDelete">
+        <UiButton
+          variant="danger"
+          size="sm"
+          :loading="isRemoving"
+          @click="showDeleteConfirm = true"
+        >
           Delete
         </UiButton>
         <UiButton type="submit" :loading="isUpdating">Save</UiButton>
       </div>
     </form>
   </UiModal>
+  <UiConfirmDialog
+    :open="showDeleteConfirm"
+    title="Delete sensor"
+    message="Are you sure you want to delete this sensor?"
+    confirm-label="Delete"
+    :loading="isRemoving"
+    @confirm="handleDelete"
+    @cancel="showDeleteConfirm = false"
+  />
 </template>

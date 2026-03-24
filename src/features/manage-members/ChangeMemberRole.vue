@@ -2,7 +2,9 @@
 import { ref } from "vue";
 import { useUpdateMemberRole, useRemoveMember } from "@/entities/member/api/member.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { ASSIGNABLE_ROLE_OPTIONS } from "@/shared/types";
 import UiModal from "@/shared/ui/UiModal.vue";
+import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
 import UiSelect from "@/shared/ui/UiSelect.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 
@@ -21,11 +23,9 @@ const emit = defineEmits<{
 
 const role = ref(props.currentRole);
 const error = ref("");
+const showRemoveConfirm = ref(false);
 
-const roleOptions = [
-  { value: "admin", label: "Admin" },
-  { value: "viewer", label: "Viewer" },
-];
+const roleOptions = ASSIGNABLE_ROLE_OPTIONS;
 
 const { mutate: updateRole, isPending: isUpdating } = useUpdateMemberRole(props.placeId);
 const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(props.placeId);
@@ -44,7 +44,6 @@ function handleSubmit() {
 }
 
 function handleRemove() {
-  if (!confirm("Remove this member from the place?")) return;
   error.value = "";
   removeMember(props.userId, {
     onSuccess: () => emit("close"),
@@ -61,11 +60,25 @@ function handleRemove() {
       <UiSelect v-model="role" :options="roleOptions" label="Role" />
       <p v-if="error" class="text-sm text-[var(--color-danger)]">{{ error }}</p>
       <div class="flex items-center justify-between">
-        <UiButton variant="danger" size="sm" :loading="isRemoving" @click="handleRemove">
+        <UiButton
+          variant="danger"
+          size="sm"
+          :loading="isRemoving"
+          @click="showRemoveConfirm = true"
+        >
           Remove member
         </UiButton>
         <UiButton type="submit" :loading="isUpdating">Save</UiButton>
       </div>
     </form>
   </UiModal>
+  <UiConfirmDialog
+    :open="showRemoveConfirm"
+    title="Remove member"
+    message="Remove this member from the place?"
+    confirm-label="Remove"
+    :loading="isRemoving"
+    @confirm="handleRemove"
+    @cancel="showRemoveConfirm = false"
+  />
 </template>

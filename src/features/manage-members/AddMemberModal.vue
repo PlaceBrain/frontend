@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useAddMember } from "@/entities/member/api/member.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { ASSIGNABLE_ROLE_OPTIONS } from "@/shared/types";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiSelect from "@/shared/ui/UiSelect.vue";
@@ -22,10 +23,7 @@ const email = ref("");
 const role = ref("viewer");
 const error = ref("");
 
-const roleOptions = [
-  { value: "admin", label: "Admin" },
-  { value: "viewer", label: "Viewer" },
-];
+const roleOptions = ASSIGNABLE_ROLE_OPTIONS;
 
 const { mutate, isPending } = useAddMember(props.placeId);
 

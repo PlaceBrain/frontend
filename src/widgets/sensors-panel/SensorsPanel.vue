@@ -47,7 +47,7 @@ let tickTimer: ReturnType<typeof setInterval> | null = null;
 onMounted(() => {
   tickTimer = setInterval(() => {
     now.value = Date.now();
-  }, 1000);
+  }, 15000);
 });
 onUnmounted(() => {
   if (tickTimer) clearInterval(tickTimer);
@@ -128,6 +128,7 @@ function navigateToDevice(deviceId: string) {
             v-if="canManage"
             class="p-1 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
             title="Device settings"
+            aria-label="Device settings"
             @click="navigateToDevice(row.deviceId)"
           >
             <svg
