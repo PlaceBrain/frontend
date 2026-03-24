@@ -45,7 +45,7 @@ watch(
 </script>
 
 <template>
-  <div class="border-b border-[var(--color-border)] overflow-x-auto">
+  <div class="border-b border-[var(--color-border)] overflow-x-auto overflow-y-hidden">
     <nav ref="containerRef" class="relative flex gap-1 -mb-px w-max min-w-full">
       <div
         class="absolute bottom-0 h-0.5 rounded-full bg-[var(--color-accent)] transition-all duration-200 ease-out"
