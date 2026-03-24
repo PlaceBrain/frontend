@@ -72,6 +72,7 @@ export function useReadingsHistory(
       queryKeys.telemetry.history(
         toValue(placeId),
         toValue(deviceId),
+        params.value.keys ?? [],
         params.value.from,
         params.value.to,
         params.value.interval,

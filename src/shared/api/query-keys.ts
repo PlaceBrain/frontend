@@ -26,7 +26,13 @@ export const queryKeys = {
   telemetry: {
     latest: (placeId: string, deviceId: string) =>
       ["telemetry", "latest", placeId, deviceId] as const,
-    history: (placeId: string, deviceId: string, from: string, to: string, interval: number) =>
-      ["telemetry", "history", placeId, deviceId, from, to, interval] as const,
+    history: (
+      placeId: string,
+      deviceId: string,
+      keys: string[],
+      from: string,
+      to: string,
+      interval: number,
+    ) => ["telemetry", "history", placeId, deviceId, keys, from, to, interval] as const,
   },
 } as const;
