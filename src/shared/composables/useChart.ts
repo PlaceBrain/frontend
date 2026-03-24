@@ -27,10 +27,13 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
   const chart = ref<uPlot | null>(null);
   let resizeObserver: ResizeObserver | null = null;
 
-  function createChart(data: uPlot.AlignedData, seriesCount: "raw" | "aggregated") {
+  function createChart(data: uPlot.AlignedData, mode: "raw" | "aggregated") {
     destroy();
     const el = containerRef.value;
     if (!el) return;
+
+    // Skip creating chart with no data points
+    if (!data[0] || data[0].length === 0) return;
 
     const colors = buildThemeColors();
     const width = el.clientWidth;
@@ -52,14 +55,17 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
     ];
 
     const series: uPlot.Series[] = [{}]; // x-axis timestamps
+    let alignedData: uPlot.AlignedData;
 
-    if (seriesCount === "raw") {
+    if (mode === "raw") {
       series.push({
         label: opts.title ?? "Value",
         stroke: colors.accent,
         width: 2,
         points: { show: false },
       });
+      // Ensure data has exactly 2 arrays: [timestamps, values]
+      alignedData = [data[0], data[1] ?? []];
     } else {
       // avg line
       series.push({
@@ -69,14 +75,12 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
         points: { show: false },
       });
       if (opts.showBand !== false) {
-        // min line (transparent, used for band fill)
         series.push({
           label: "min",
           stroke: "transparent",
           width: 0,
           points: { show: false },
         });
-        // max line (transparent, band filled between min and max)
         series.push({
           label: "max",
           stroke: "transparent",
@@ -85,6 +89,9 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
           fill: colors.band,
         });
       }
+      // Ensure data has exactly 4 arrays: [timestamps, avg, min, max]
+      const empty = new Array(data[0].length).fill(null);
+      alignedData = [data[0], data[1] ?? empty, data[2] ?? empty, data[3] ?? empty];
     }
 
     const uOpts: uPlot.Options = {
@@ -97,7 +104,7 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
       padding: [8, 8, 0, 0],
     };
 
-    chart.value = new uPlot(uOpts, data, el);
+    chart.value = new uPlot(uOpts, alignedData, el);
 
     if (!resizeObserver) {
       resizeObserver = new ResizeObserver(() => {
