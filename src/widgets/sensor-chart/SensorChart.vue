@@ -43,10 +43,8 @@ const { data: seriesData, isLoading } = useReadingsHistory(
   fetchEnabled,
 );
 
-function buildChartData(): { data: uPlot.AlignedData; mode: "raw" | "aggregated" } {
-  if (!seriesData.value?.length) {
-    return { data: [[], []], mode: "raw" };
-  }
+function buildChartData(): { data: uPlot.AlignedData; mode: "raw" | "aggregated" } | null {
+  if (!seriesData.value?.length) return null;
 
   const series = seriesData.value[0];
 
@@ -56,28 +54,38 @@ function buildChartData(): { data: uPlot.AlignedData; mode: "raw" | "aggregated"
     return { data: [timestamps, values], mode: "raw" };
   }
 
-  const timestamps = series.points.map((p) => new Date(p.time).getTime() / 1000);
-  const avgs = series.points.map((p) => p.avg);
-  const mins = series.points.map((p) => p.min);
-  const maxs = series.points.map((p) => p.max);
-  return { data: [timestamps, avgs, mins, maxs] as uPlot.AlignedData, mode: "aggregated" };
+  if (series.points.length > 0) {
+    const timestamps = series.points.map((p) => new Date(p.time).getTime() / 1000);
+    const avgs = series.points.map((p) => p.avg);
+    const mins = series.points.map((p) => p.min);
+    const maxs = series.points.map((p) => p.max);
+    return { data: [timestamps, avgs, mins, maxs] as uPlot.AlignedData, mode: "aggregated" };
+  }
+
+  return null;
 }
 
+// Historical mode: render chart when data arrives
 watch(seriesData, () => {
+  if (props.isLive) return; // Don't touch chart while in live mode
   if (!seriesData.value) return;
-  const { data, mode } = buildChartData();
-  createChart(data, mode);
+  const result = buildChartData();
+  if (result) {
+    createChart(result.data, result.mode);
+  }
 });
 
-// Live mode: initial load of last 1h via API, then append from MQTT
+// Live mode toggle — use version to cancel stale async operations
+let liveVersion = 0;
+
 watch(
   () => props.isLive,
   async (live) => {
-    if (!live) {
-      destroy();
-      return;
-    }
-    // Load last 1h as initial data
+    const version = ++liveVersion;
+    destroy();
+
+    if (!live) return;
+
     const now = new Date();
     const from = new Date(now.getTime() - 3600_000);
     try {
@@ -91,6 +99,7 @@ watch(
       const { data } = await api.get(
         `/api/places/${props.placeId}/devices/${props.deviceId}/telemetry/history?${params}`,
       );
+      if (version !== liveVersion) return; // Stale — user toggled again
       const series = (data as { series: { raw_points: { time: string; value: number }[] }[] })
         .series[0];
       if (series?.raw_points.length) {
@@ -100,7 +109,6 @@ watch(
         const values = series.raw_points.map((p: { value: number }) => p.value);
         createChart([timestamps, values], "raw");
       }
-      // If no data, don't create chart — appendPoint will handle first point
     } catch {
       // Auth error or network issue — chart stays empty until MQTT provides data
     }
@@ -119,7 +127,6 @@ watch(
     if (!liveVal || !props.isLive) return;
     const ts = new Date(liveVal.timestamp).getTime() / 1000;
     if (!chart.value) {
-      // First MQTT point — bootstrap chart
       createChart([[ts], [liveVal.value]], "raw");
     } else {
       appendPoint(ts, liveVal.value);
