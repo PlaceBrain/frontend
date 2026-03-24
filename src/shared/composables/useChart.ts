@@ -75,6 +75,7 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
         points: { show: false },
       });
       if (opts.showBand !== false) {
+        // series index 2 = min, index 3 = max
         series.push({
           label: "min",
           stroke: "transparent",
@@ -86,7 +87,6 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
           stroke: "transparent",
           width: 0,
           points: { show: false },
-          fill: colors.band,
         });
       }
       // Ensure data has exactly 4 arrays: [timestamps, avg, min, max]
@@ -94,10 +94,17 @@ export function useChart(containerRef: Ref<HTMLElement | null>, opts: ChartOptio
       alignedData = [data[0], data[1] ?? empty, data[2] ?? empty, data[3] ?? empty];
     }
 
+    // Band fill between min (series 2) and max (series 3)
+    const bands: uPlot.Band[] =
+      mode === "aggregated" && opts.showBand !== false
+        ? [{ series: [3, 2], fill: colors.band }]
+        : [];
+
     const uOpts: uPlot.Options = {
       width,
       height,
       series,
+      bands,
       axes,
       cursor: { drag: { x: false, y: false } },
       legend: { show: false },
