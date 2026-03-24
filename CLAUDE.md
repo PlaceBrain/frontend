@@ -31,7 +31,21 @@ src/
 
 - Тема: светлая/тёмная через CSS-переменные + класс `dark` на `<html>`
 - Минималистичный, без градиентов. Акцент `#6E9EF9`, danger `#E85A4F`
-- Шрифты: Inter (body), Space Grotesk (headings)
+- Шрифты: Inter (body), Space Grotesk (headings — через класс `font-heading`, не inline style)
+- **Цвета только через CSS-переменные** (`var(--color-*)`) — не использовать hardcoded Tailwind-цвета (`bg-red-50`, `text-red-700`)
+
+## UX-правила
+
+- **Деструктивные действия:** использовать `<UiConfirmDialog>` — **не** нативный `confirm()`
+- **Обратная связь:** использовать `useToast()` для success/error уведомлений после мутаций
+- **Общие константы** (роли, enum-опции) — в `shared/types/index.ts`, не дублировать по компонентам
+
+## Доступность (a11y)
+
+- Кнопки с иконками без текста — обязательно `aria-label`
+- Модалки — `role="dialog"`, `aria-modal="true"`, focus trap (реализован в `UiModal`)
+- Toggle-кнопки — `role="switch"`, `aria-checked`
+- Инпуты — `<label :for="id">` + `<input :id="id">` (реализовано в `UiInput`)
 
 ## API
 
