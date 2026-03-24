@@ -4,6 +4,7 @@ import UiTabs from "@/shared/ui/UiTabs.vue";
 import MembersPanel from "@/widgets/members-panel/MembersPanel.vue";
 import SensorsPanel from "@/widgets/sensors-panel/SensorsPanel.vue";
 import ActuatorsPanel from "@/widgets/actuators-panel/ActuatorsPanel.vue";
+import ChartsPanel from "@/widgets/charts-panel/ChartsPanel.vue";
 
 interface Props {
   placeId: string;
@@ -18,6 +19,7 @@ const activeTab = ref("sensors");
 const tabs = [
   { key: "sensors", label: "Sensors" },
   { key: "actuators", label: "Actuators" },
+  { key: "charts", label: "Charts" },
   { key: "members", label: "Members" },
 ];
 </script>
@@ -37,6 +39,11 @@ const tabs = [
         v-else-if="activeTab === 'actuators'"
         :place-id="placeId"
         :can-manage="canManage"
+        :latest-values="latestValues"
+      />
+      <ChartsPanel
+        v-else-if="activeTab === 'charts'"
+        :place-id="placeId"
         :latest-values="latestValues"
       />
       <MembersPanel

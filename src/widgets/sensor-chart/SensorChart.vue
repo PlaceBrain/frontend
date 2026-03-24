@@ -1,0 +1,158 @@
+<script setup lang="ts">
+import { ref, computed, watch } from "vue";
+import type uPlot from "uplot";
+import type { Sensor } from "@/entities/device/model/types";
+import { useReadingsHistory, type HistoryParams } from "@/entities/device/api/telemetry.api";
+import { useChart } from "@/shared/composables/useChart";
+import UiSpinner from "@/shared/ui/UiSpinner.vue";
+
+interface Props {
+  placeId: string;
+  deviceId: string;
+  sensor: Sensor;
+  periodFrom: string;
+  periodTo: string;
+  interval: number;
+  isLive: boolean;
+  latestValues?: Map<string, Map<string, { value: number; timestamp: string }>>;
+}
+
+const props = defineProps<Props>();
+
+const containerRef = ref<HTMLElement | null>(null);
+const { createChart, appendPoint } = useChart(containerRef, {
+  title: props.sensor.name || props.sensor.key,
+  unit: props.sensor.unit_label,
+  precision: props.sensor.precision,
+  showBand: true,
+});
+
+const historyParams = computed<HistoryParams>(() => ({
+  from: props.periodFrom,
+  to: props.periodTo,
+  interval: props.interval,
+  keys: [props.sensor.key],
+}));
+
+const fetchEnabled = computed(() => !props.isLive);
+
+const { data: seriesData, isLoading } = useReadingsHistory(
+  props.placeId,
+  props.deviceId,
+  historyParams,
+  fetchEnabled,
+);
+
+function buildChartData(): { data: uPlot.AlignedData; mode: "raw" | "aggregated" } {
+  if (!seriesData.value?.length) {
+    return { data: [[], []], mode: "raw" };
+  }
+
+  const series = seriesData.value[0];
+
+  if (series.raw_points.length > 0) {
+    const timestamps = series.raw_points.map((p) => new Date(p.time).getTime() / 1000);
+    const values = series.raw_points.map((p) => p.value);
+    return { data: [timestamps, values], mode: "raw" };
+  }
+
+  const timestamps = series.points.map((p) => new Date(p.time).getTime() / 1000);
+  const avgs = series.points.map((p) => p.avg);
+  const mins = series.points.map((p) => p.min);
+  const maxs = series.points.map((p) => p.max);
+  return { data: [timestamps, avgs, mins, maxs] as uPlot.AlignedData, mode: "aggregated" };
+}
+
+watch(seriesData, () => {
+  if (!seriesData.value) return;
+  const { data, mode } = buildChartData();
+  createChart(data, mode);
+});
+
+// Live mode: initial load of last 1h via API, then append from MQTT
+watch(
+  () => props.isLive,
+  async (live) => {
+    if (!live) return;
+    // Load last 1h as initial data
+    const now = new Date();
+    const from = new Date(now.getTime() - 3600_000);
+    try {
+      const { api } = await import("@/shared/api/client");
+      const params = new URLSearchParams({
+        from: from.toISOString(),
+        to: now.toISOString(),
+        interval: "0",
+        keys: props.sensor.key,
+      });
+      const { data } = await api.get(
+        `/api/places/${props.placeId}/devices/${props.deviceId}/telemetry/history?${params}`,
+      );
+      const series = (data as { series: { raw_points: { time: string; value: number }[] }[] })
+        .series[0];
+      if (series?.raw_points.length) {
+        const timestamps = series.raw_points.map(
+          (p: { time: string }) => new Date(p.time).getTime() / 1000,
+        );
+        const values = series.raw_points.map((p: { value: number }) => p.value);
+        createChart([timestamps, values], "raw");
+      } else {
+        createChart([[], []], "raw");
+      }
+    } catch {
+      createChart([[], []], "raw");
+    }
+  },
+  { immediate: true },
+);
+
+// Append MQTT points in live mode
+watch(
+  () => {
+    if (!props.isLive || !props.latestValues) return null;
+    const deviceMap = props.latestValues.get(props.deviceId);
+    if (!deviceMap) return null;
+    return deviceMap.get(props.sensor.key) ?? null;
+  },
+  (liveVal) => {
+    if (liveVal && props.isLive) {
+      appendPoint(new Date(liveVal.timestamp).getTime() / 1000, liveVal.value);
+    }
+  },
+);
+
+function getLiveValue(): string {
+  if (!props.latestValues) return "--";
+  const deviceMap = props.latestValues.get(props.deviceId);
+  if (!deviceMap) return "--";
+  const val = deviceMap.get(props.sensor.key);
+  if (!val) return "--";
+  return val.value.toFixed(props.sensor.precision);
+}
+</script>
+
+<template>
+  <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <span class="text-sm font-medium text-[var(--color-text-primary)]">
+          {{ sensor.name || sensor.key }}
+        </span>
+        <span v-if="sensor.unit_label" class="text-xs text-[var(--color-text-secondary)] ml-1">
+          ({{ sensor.unit_label }})
+        </span>
+      </div>
+      <span class="text-sm font-mono text-[var(--color-text-primary)]">
+        {{ getLiveValue() }}
+        <span v-if="sensor.unit_label" class="text-xs text-[var(--color-text-secondary)]">
+          {{ sensor.unit_label }}
+        </span>
+      </span>
+    </div>
+
+    <div v-if="isLoading && !isLive" class="flex justify-center py-12">
+      <UiSpinner />
+    </div>
+    <div ref="containerRef" class="w-full" />
+  </div>
+</template>

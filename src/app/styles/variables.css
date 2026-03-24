@@ -21,6 +21,14 @@
   --color-status-online-text: #16a34a;
   --color-status-offline-bg: rgba(107, 114, 128, 0.08);
   --color-status-offline-text: #6b7280;
+  --color-chart-1: #6e9ef9;
+  --color-chart-2: #f97066;
+  --color-chart-3: #34d399;
+  --color-chart-4: #fbbf24;
+  --color-chart-5: #a78bfa;
+  --color-chart-6: #f472b6;
+  --color-chart-band: rgba(110, 158, 249, 0.1);
+  --color-chart-grid: #e5e7eb;
 }
 
 @supports not (view-transition-name: root) {
@@ -46,4 +54,6 @@
   --color-status-online-text: #4ade80;
   --color-status-offline-bg: rgba(115, 115, 115, 0.15);
   --color-status-offline-text: #737373;
+  --color-chart-band: rgba(110, 158, 249, 0.15);
+  --color-chart-grid: #1a1a1a;
 }

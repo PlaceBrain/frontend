@@ -9,10 +9,7 @@ import { useCurrentUser } from "@/entities/user/api/user.api";
 const route = useRoute();
 const { data: user } = useCurrentUser();
 
-const navItems = [
-  { name: "places", label: "Places" },
-  { name: "dashboard", label: "Dashboard" },
-];
+const navItems = [{ name: "places", label: "Places" }];
 
 const navRefs = ref<HTMLElement[]>([]);
 const navContainer = ref<HTMLElement>();
