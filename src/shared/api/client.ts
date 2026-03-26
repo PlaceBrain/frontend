@@ -35,9 +35,20 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const isAuthEndpoint = originalRequest.url?.startsWith("/api/auth/");
+    const url = originalRequest.url ?? "";
+    const status = error.response?.status;
 
-    if (error.response?.status !== 401 || originalRequest._retry || isAuthEndpoint) {
+    if (url === "/api/auth/me" && status === 404) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
+    const isPublicAuthEndpoint =
+      url.startsWith("/api/auth/") && url !== "/api/auth/me";
+
+    if (status !== 401 || originalRequest._retry || isPublicAuthEndpoint) {
       return Promise.reject(error);
     }
 
