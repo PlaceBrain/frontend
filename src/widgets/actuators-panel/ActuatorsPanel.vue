@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDevicesWithDetails } from "@/entities/device/api/device.api";
-import { api } from "@/shared/api/client";
+import { useSendCommand } from "@/entities/device/api/actuator.api";
 import type { Actuator } from "@/entities/device/model/types";
 import UiSpinner from "@/shared/ui/UiSpinner.vue";
 import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
@@ -40,12 +40,14 @@ function navigateToDevice(deviceId: string) {
 }
 
 const pendingCommands = ref<Set<string>>(new Set());
+const { mutateAsync: sendCommandMutation } = useSendCommand(props.placeId);
 
 async function sendCommand(row: ActuatorRow, value: string) {
   const key = `${row.deviceId}:${row.actuator.key}`;
   pendingCommands.value.add(key);
   try {
-    await api.post(`/api/places/${props.placeId}/devices/${row.deviceId}/command`, {
+    await sendCommandMutation({
+      deviceId: row.deviceId,
       actuator_key: row.actuator.key,
       value,
     });

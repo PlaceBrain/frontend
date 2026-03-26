@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { useCreateActuator } from "@/entities/device/api/actuator.api";
 import type { CreateActuatorRequest } from "@/entities/device/model/types";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiSelect from "@/shared/ui/UiSelect.vue";
@@ -38,6 +39,7 @@ const isNumber = computed(() => valueType.value === "number");
 const isEnum = computed(() => valueType.value === "enum");
 
 const { mutate, isPending } = useCreateActuator(props.placeId, props.deviceId);
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
@@ -61,6 +63,7 @@ function handleSubmit() {
   }
   mutate(req, {
     onSuccess: () => {
+      success("Actuator added");
       key.value = "";
       name.value = "";
       enumOptionsStr.value = "";
@@ -68,6 +71,7 @@ function handleSubmit() {
     },
     onError: (e) => {
       error.value = getErrorMessage(e);
+      showError(getErrorMessage(e));
     },
   });
 }

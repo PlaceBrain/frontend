@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useCreatePlace } from "@/entities/place/api/place.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
@@ -21,6 +22,7 @@ const description = ref("");
 const error = ref("");
 
 const { mutate, isPending } = useCreatePlace();
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
@@ -28,12 +30,14 @@ function handleSubmit() {
     { name: name.value, description: description.value || undefined },
     {
       onSuccess: () => {
+        success("Place created");
         name.value = "";
         description.value = "";
         emit("close");
       },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );

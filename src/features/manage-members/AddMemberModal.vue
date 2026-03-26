@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useAddMember } from "@/entities/member/api/member.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import { ASSIGNABLE_ROLE_OPTIONS } from "@/shared/types";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
@@ -26,6 +27,7 @@ const error = ref("");
 const roleOptions = ASSIGNABLE_ROLE_OPTIONS;
 
 const { mutate, isPending } = useAddMember(props.placeId);
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
@@ -33,12 +35,14 @@ function handleSubmit() {
     { email: email.value, role: role.value },
     {
       onSuccess: () => {
+        success("Member added");
         email.value = "";
         role.value = "viewer";
         emit("close");
       },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );

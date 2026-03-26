@@ -60,6 +60,17 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: "/verify-otp",
+    component: () => import("@/app/layouts/AuthLayout.vue"),
+    children: [
+      {
+        path: "",
+        name: "verify-otp",
+        component: () => import("@/pages/verify-otp/VerifyOtpPage.vue"),
+      },
+    ],
+  },
 ];
 
 export const router = createRouter({
@@ -75,7 +86,10 @@ router.beforeEach((to) => {
     return { name: "login" };
   }
 
-  if ((to.name === "login" || to.name === "register") && isAuthenticated) {
+  if (
+    (to.name === "login" || to.name === "register" || to.name === "verify-otp") &&
+    isAuthenticated
+  ) {
     return { name: "places" };
   }
 });

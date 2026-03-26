@@ -90,8 +90,4 @@ export interface SendCommandRequest {
   value: string;
 }
 
-export interface MqttCredentials {
-  username: string;
-  password: string;
-  expires_at: number;
-}
+export type { MqttCredentials } from "@/shared/types";

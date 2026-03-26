@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import { useUpdateDevice } from "@/entities/device/api/device.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
@@ -27,15 +28,20 @@ watch(
 );
 
 const { mutate, isPending } = useUpdateDevice(props.placeId, props.device.device_id);
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
   mutate(
     { name: name.value },
     {
-      onSuccess: () => emit("close"),
+      onSuccess: () => {
+        success("Device updated");
+        emit("close");
+      },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );

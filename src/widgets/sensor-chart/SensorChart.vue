@@ -2,7 +2,11 @@
 import { ref, computed, watch } from "vue";
 import type uPlot from "uplot";
 import type { Sensor } from "@/entities/device/model/types";
-import { useReadingsHistory, type HistoryParams } from "@/entities/device/api/telemetry.api";
+import {
+  useReadingsHistory,
+  fetchHistory,
+  type HistoryParams,
+} from "@/entities/device/api/telemetry.api";
 import { useChart } from "@/shared/composables/useChart";
 import UiSpinner from "@/shared/ui/UiSpinner.vue";
 
@@ -89,19 +93,14 @@ watch(
     const now = new Date();
     const from = new Date(now.getTime() - 3600_000);
     try {
-      const { api } = await import("@/shared/api/client");
-      const params = new URLSearchParams({
+      const seriesData = await fetchHistory(props.placeId, props.deviceId, {
         from: from.toISOString(),
         to: now.toISOString(),
-        interval: "0",
-        keys: props.sensor.key,
+        interval: 0,
+        keys: [props.sensor.key],
       });
-      const { data } = await api.get(
-        `/api/places/${props.placeId}/devices/${props.deviceId}/telemetry/history?${params}`,
-      );
       if (version !== liveVersion) return; // Stale — user toggled again
-      const series = (data as { series: { raw_points: { time: string; value: number }[] }[] })
-        .series[0];
+      const series = seriesData[0];
       if (series?.raw_points.length) {
         const timestamps = series.raw_points.map(
           (p: { time: string }) => new Date(p.time).getTime() / 1000,

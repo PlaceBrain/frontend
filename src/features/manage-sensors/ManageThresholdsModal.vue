@@ -6,6 +6,7 @@ import {
   useDeleteThreshold,
 } from "@/entities/device/api/sensor.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiSelect from "@/shared/ui/UiSelect.vue";
@@ -34,6 +35,7 @@ const { mutate: addThreshold, isPending: isAdding } = useSetThreshold(
   props.deviceId,
   props.sensor.sensor_id,
 );
+const { success, error: showError } = useToast();
 const { mutate: removeThreshold } = useDeleteThreshold(
   props.placeId,
   props.deviceId,
@@ -65,17 +67,22 @@ function handleAdd() {
     },
     {
       onSuccess: () => {
+        success("Threshold saved");
         newValue.value = "";
       },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );
 }
 
 function handleRemove(thresholdId: string) {
-  removeThreshold(thresholdId);
+  removeThreshold(thresholdId, {
+    onSuccess: () => success("Threshold deleted"),
+    onError: (e) => showError(getErrorMessage(e)),
+  });
 }
 </script>
 

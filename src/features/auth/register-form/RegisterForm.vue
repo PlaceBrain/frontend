@@ -7,7 +7,7 @@ import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 
 const router = useRouter();
-const { register, login } = useAuth();
+const { register } = useAuth();
 
 const username = ref("");
 const email = ref("");
@@ -20,8 +20,7 @@ async function handleSubmit() {
   loading.value = true;
   try {
     await register(username.value, email.value, password.value);
-    await login(email.value, password.value);
-    router.push({ name: "places" });
+    router.push({ name: "verify-otp", query: { email: email.value } });
   } catch (e) {
     error.value = getErrorMessage(e);
   } finally {

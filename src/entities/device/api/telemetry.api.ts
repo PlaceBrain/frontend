@@ -14,6 +14,16 @@ interface LatestReadingsResponse {
   readings: SensorReadingResponse[];
 }
 
+export async function fetchLatestReadings(
+  placeId: string,
+  deviceId: string,
+): Promise<SensorReadingResponse[]> {
+  const { data } = await api.get<LatestReadingsResponse>(
+    `/api/places/${placeId}/devices/${deviceId}/telemetry/latest`,
+  );
+  return data.readings;
+}
+
 export function useLatestReadings(placeId: Ref<string> | string, deviceId: string) {
   const pId = typeof placeId === "string" ? placeId : placeId;
   return useQuery({
@@ -59,6 +69,25 @@ export interface HistoryParams {
   to: string;
   interval: number;
   keys?: string[];
+}
+
+export async function fetchHistory(
+  placeId: string,
+  deviceId: string,
+  params: { from: string; to: string; interval: number; keys?: string[] },
+): Promise<SeriesData[]> {
+  const searchParams = new URLSearchParams({
+    from: params.from,
+    to: params.to,
+    interval: String(params.interval),
+  });
+  if (params.keys?.length) {
+    searchParams.set("keys", params.keys.join(","));
+  }
+  const { data } = await api.get<ReadingsHistoryResponse>(
+    `/api/places/${placeId}/devices/${deviceId}/telemetry/history?${searchParams}`,
+  );
+  return data.series;
 }
 
 export function useReadingsHistory(

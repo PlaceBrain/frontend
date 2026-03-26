@@ -29,6 +29,12 @@
   --color-chart-6: #f472b6;
   --color-chart-band: rgba(110, 158, 249, 0.1);
   --color-chart-grid: #e5e7eb;
+  --color-toast-success-bg: #f0fdf4;
+  --color-toast-success-border: #bbf7d0;
+  --color-toast-success-text: #166534;
+  --color-toast-error-bg: #fef2f2;
+  --color-toast-error-border: #fecaca;
+  --color-toast-error-text: #991b1b;
 }
 
 @supports not (view-transition-name: root) {
@@ -56,4 +62,10 @@
   --color-status-offline-text: #737373;
   --color-chart-band: rgba(110, 158, 249, 0.15);
   --color-chart-grid: #1a1a1a;
+  --color-toast-success-bg: rgba(34, 197, 94, 0.08);
+  --color-toast-success-border: #166534;
+  --color-toast-success-text: #86efac;
+  --color-toast-error-bg: rgba(232, 90, 79, 0.08);
+  --color-toast-error-border: #991b1b;
+  --color-toast-error-text: #fca5a5;
 }

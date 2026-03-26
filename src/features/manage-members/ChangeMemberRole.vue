@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useUpdateMemberRole, useRemoveMember } from "@/entities/member/api/member.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import { ASSIGNABLE_ROLE_OPTIONS } from "@/shared/types";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
@@ -29,15 +30,20 @@ const roleOptions = ASSIGNABLE_ROLE_OPTIONS;
 
 const { mutate: updateRole, isPending: isUpdating } = useUpdateMemberRole(props.placeId);
 const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(props.placeId);
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
   updateRole(
     { userId: props.userId, role: role.value },
     {
-      onSuccess: () => emit("close"),
+      onSuccess: () => {
+        success("Role updated");
+        emit("close");
+      },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );
@@ -46,9 +52,13 @@ function handleSubmit() {
 function handleRemove() {
   error.value = "";
   removeMember(props.userId, {
-    onSuccess: () => emit("close"),
+    onSuccess: () => {
+      success("Member removed");
+      emit("close");
+    },
     onError: (e) => {
       error.value = getErrorMessage(e);
+      showError(getErrorMessage(e));
     },
   });
 }

@@ -2,6 +2,8 @@
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useDevice, useDeleteDevice, useRegenerateToken } from "@/entities/device/api/device.api";
+import { useToast } from "@/shared/composables/useToast";
+import { getErrorMessage } from "@/shared/api/types";
 import AddSensorModal from "@/features/manage-sensors/AddSensorModal.vue";
 import EditSensorModal from "@/features/manage-sensors/EditSensorModal.vue";
 import ManageThresholdsModal from "@/features/manage-sensors/ManageThresholdsModal.vue";
@@ -27,6 +29,7 @@ const { mutate: regenerateToken, isPending: isRegenerating } = useRegenerateToke
   deviceId.value,
 );
 
+const { success, error: showError } = useToast();
 const showEditModal = ref(false);
 const showAddSensorModal = ref(false);
 const showAddActuatorModal = ref(false);
@@ -39,16 +42,22 @@ const showRegenerateConfirm = ref(false);
 
 function handleDelete() {
   deleteDevice(deviceId.value, {
-    onSuccess: () => router.push({ name: "devices-list", params: { placeId: placeId.value } }),
+    onSuccess: () => {
+      success("Device deleted");
+      router.push({ name: "devices-list", params: { placeId: placeId.value } });
+    },
+    onError: (e) => showError(getErrorMessage(e)),
   });
 }
 
 function handleRegenerate() {
   regenerateToken(undefined, {
     onSuccess: (token) => {
+      success("Token regenerated");
       newToken.value = token;
       showRegenerateConfirm.value = false;
     },
+    onError: (e) => showError(getErrorMessage(e)),
   });
 }
 

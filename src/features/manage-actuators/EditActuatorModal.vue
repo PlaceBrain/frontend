@@ -2,6 +2,7 @@
 import { ref, watch, computed } from "vue";
 import { useUpdateActuator, useDeleteActuator } from "@/entities/device/api/actuator.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
@@ -46,6 +47,7 @@ watch(
 
 const { mutate: update, isPending: isUpdating } = useUpdateActuator(props.placeId, props.deviceId);
 const { mutate: remove, isPending: isRemoving } = useDeleteActuator(props.placeId, props.deviceId);
+const { success, error: showError } = useToast();
 
 interface UpdateActuatorPayload {
   actuatorId: string;
@@ -78,18 +80,26 @@ function handleSubmit() {
       .filter(Boolean);
   }
   update(req, {
-    onSuccess: () => emit("close"),
+    onSuccess: () => {
+      success("Actuator updated");
+      emit("close");
+    },
     onError: (e) => {
       error.value = getErrorMessage(e);
+      showError(getErrorMessage(e));
     },
   });
 }
 
 function handleDelete() {
   remove(props.actuator.actuator_id, {
-    onSuccess: () => emit("close"),
+    onSuccess: () => {
+      success("Actuator deleted");
+      emit("close");
+    },
     onError: (e) => {
       error.value = getErrorMessage(e);
+      showError(getErrorMessage(e));
     },
   });
 }

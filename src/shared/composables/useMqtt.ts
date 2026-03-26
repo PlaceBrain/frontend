@@ -1,7 +1,7 @@
 import { ref, onMounted, onUnmounted, type Ref } from "vue";
 import mqtt from "mqtt";
 import { api } from "@/shared/api/client";
-import type { MqttCredentials } from "@/entities/device/model/types";
+import type { MqttCredentials } from "@/shared/types";
 
 export function useMqtt(placeId: Ref<string> | string) {
   const latestValues = ref<Map<string, Map<string, { value: number; timestamp: string }>>>(

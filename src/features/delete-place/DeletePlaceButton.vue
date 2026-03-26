@@ -2,6 +2,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useDeletePlace } from "@/entities/place/api/place.api";
+import { useToast } from "@/shared/composables/useToast";
+import { getErrorMessage } from "@/shared/api/types";
 import UiButton from "@/shared/ui/UiButton.vue";
 import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
 
@@ -12,11 +14,18 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 const { mutate, isPending } = useDeletePlace();
+const { success, error: showError } = useToast();
 const showConfirm = ref(false);
 
 function handleDelete() {
   mutate(props.placeId, {
-    onSuccess: () => router.push({ name: "places" }),
+    onSuccess: () => {
+      success("Place deleted");
+      router.push({ name: "places" });
+    },
+    onError: (e) => {
+      showError(getErrorMessage(e));
+    },
   });
 }
 </script>

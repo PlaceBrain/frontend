@@ -9,10 +9,7 @@ import LogoIcon from "@/shared/ui/LogoIcon.vue";
     <div class="w-full max-w-sm">
       <div class="mb-8 flex flex-col items-center text-[var(--color-text-primary)]">
         <LogoIcon size="3rem" class="mb-3" />
-        <h1
-          class="text-2xl font-bold text-[var(--color-text-primary)]"
-          style="font-family: &quot;Space Grotesk&quot;, system-ui, sans-serif"
-        >
+        <h1 class="text-2xl font-bold font-heading text-[var(--color-text-primary)]">
           PlaceBrain
         </h1>
       </div>

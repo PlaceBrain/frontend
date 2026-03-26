@@ -14,8 +14,8 @@ const { toasts, remove } = useToast();
           :class="[
             'flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg text-sm min-w-[280px] max-w-[400px]',
             toast.type === 'success'
-              ? 'border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/20 dark:text-green-300'
-              : 'border-red-200 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300',
+              ? 'border-[var(--color-toast-success-border)] bg-[var(--color-toast-success-bg)] text-[var(--color-toast-success-text)]'
+              : 'border-[var(--color-toast-error-border)] bg-[var(--color-toast-error-bg)] text-[var(--color-toast-error-text)]',
           ]"
         >
           <span class="flex-1">{{ toast.message }}</span>

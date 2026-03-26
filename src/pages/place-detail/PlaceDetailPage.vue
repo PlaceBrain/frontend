@@ -3,14 +3,13 @@ import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { usePlace } from "@/entities/place/api/place.api";
 import { useDevices } from "@/entities/device/api/device.api";
-import type { SensorReadingResponse } from "@/entities/device/api/telemetry.api";
+import { fetchLatestReadings } from "@/entities/device/api/telemetry.api";
 import PlaceTabs from "@/widgets/place-tabs/PlaceTabs.vue";
 import EditPlaceModal from "@/features/edit-place/EditPlaceModal.vue";
 import DeletePlaceButton from "@/features/delete-place/DeletePlaceButton.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 import UiSpinner from "@/shared/ui/UiSpinner.vue";
 import { useMqtt } from "@/shared/composables/useMqtt";
-import { api } from "@/shared/api/client";
 
 const route = useRoute();
 const router = useRouter();
@@ -33,10 +32,8 @@ watch(
     if (!deviceList) return;
     const results = await Promise.allSettled(
       deviceList.map(async (d) => {
-        const { data } = await api.get<{ readings: SensorReadingResponse[] }>(
-          `/api/places/${placeId.value}/devices/${d.device_id}/telemetry/latest`,
-        );
-        return { deviceId: d.device_id, readings: data.readings };
+        const readings = await fetchLatestReadings(placeId.value, d.device_id);
+        return { deviceId: d.device_id, readings };
       }),
     );
     for (const result of results) {

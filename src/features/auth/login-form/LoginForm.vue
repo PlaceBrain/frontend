@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 import { useAuth } from "@/shared/lib/use-auth";
+import { useToast } from "@/shared/composables/useToast";
 import { getErrorMessage } from "@/shared/api/types";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 
 const router = useRouter();
-const { login } = useAuth();
+const { login, sendOtp } = useAuth();
+const toast = useToast();
 
 const email = ref("");
 const password = ref("");
@@ -21,7 +24,17 @@ async function handleSubmit() {
     await login(email.value, password.value);
     router.push({ name: "places" });
   } catch (e) {
-    error.value = getErrorMessage(e);
+    if (axios.isAxiosError(e) && e.response?.data?.detail === "Email not verified") {
+      toast.error("Please verify your email first");
+      try {
+        await sendOtp(email.value);
+      } catch {
+        // OTP may already have been sent recently, ignore
+      }
+      router.push({ name: "verify-otp", query: { email: email.value } });
+    } else {
+      error.value = getErrorMessage(e);
+    }
   } finally {
     loading.value = false;
   }

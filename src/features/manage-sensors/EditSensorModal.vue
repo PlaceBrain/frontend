@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import { useUpdateSensor, useDeleteSensor } from "@/entities/device/api/sensor.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiConfirmDialog from "@/shared/ui/UiConfirmDialog.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
@@ -35,6 +36,7 @@ watch(
 
 const { mutate: update, isPending: isUpdating } = useUpdateSensor(props.placeId, props.deviceId);
 const { mutate: remove, isPending: isRemoving } = useDeleteSensor(props.placeId, props.deviceId);
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
@@ -46,9 +48,13 @@ function handleSubmit() {
       precision: parseInt(precision.value) || 0,
     },
     {
-      onSuccess: () => emit("close"),
+      onSuccess: () => {
+        success("Sensor updated");
+        emit("close");
+      },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );
@@ -56,9 +62,13 @@ function handleSubmit() {
 
 function handleDelete() {
   remove(props.sensor.sensor_id, {
-    onSuccess: () => emit("close"),
+    onSuccess: () => {
+      success("Sensor deleted");
+      emit("close");
+    },
     onError: (e) => {
       error.value = getErrorMessage(e);
+      showError(getErrorMessage(e));
     },
   });
 }

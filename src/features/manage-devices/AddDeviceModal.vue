@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useCreateDevice } from "@/entities/device/api/device.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
@@ -19,6 +20,7 @@ const error = ref("");
 const token = ref<string | null>(null);
 
 const { mutate, isPending } = useCreateDevice(props.placeId);
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
@@ -26,10 +28,12 @@ function handleSubmit() {
     { name: name.value },
     {
       onSuccess: (data) => {
+        success("Device added");
         token.value = data.token;
       },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );

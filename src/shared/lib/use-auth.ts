@@ -10,6 +10,10 @@ interface RegisterResponse {
   user_id: string;
 }
 
+interface OtpResponse {
+  success: boolean;
+}
+
 const accessToken = ref(localStorage.getItem("access_token"));
 
 export function useAuth() {
@@ -42,6 +46,16 @@ export function useAuth() {
     return data;
   }
 
+  async function sendOtp(email: string): Promise<OtpResponse> {
+    const { data } = await api.post<OtpResponse>("/api/auth/send-otp", { email });
+    return data;
+  }
+
+  async function verifyOtp(email: string, code: string): Promise<OtpResponse> {
+    const { data } = await api.post<OtpResponse>("/api/auth/verify-otp", { email, code });
+    return data;
+  }
+
   async function logout(): Promise<void> {
     const refreshToken = localStorage.getItem("refresh_token");
     if (refreshToken) {
@@ -56,5 +70,5 @@ export function useAuth() {
     accessToken.value = null;
   }
 
-  return { isAuthenticated, login, register, logout };
+  return { isAuthenticated, login, register, sendOtp, verifyOtp, logout };
 }

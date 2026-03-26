@@ -70,10 +70,11 @@ export function useDeleteActuator(placeId: string, deviceId: string) {
   });
 }
 
-export function useSendCommand(placeId: string, deviceId: string) {
+export function useSendCommand(placeId: string, deviceId?: string) {
   return useMutation({
-    mutationFn: async (req: SendCommandRequest) => {
-      await api.post(`/api/places/${placeId}/devices/${deviceId}/command`, req);
+    mutationFn: async (req: SendCommandRequest & { deviceId?: string }) => {
+      const resolvedDeviceId = req.deviceId ?? deviceId;
+      await api.post(`/api/places/${placeId}/devices/${resolvedDeviceId}/command`, req);
     },
   });
 }

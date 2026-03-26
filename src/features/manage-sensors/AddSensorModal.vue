@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useCreateSensor } from "@/entities/device/api/sensor.api";
 import { getErrorMessage } from "@/shared/api/types";
+import { useToast } from "@/shared/composables/useToast";
 import UiModal from "@/shared/ui/UiModal.vue";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiSelect from "@/shared/ui/UiSelect.vue";
@@ -29,6 +30,7 @@ const valueTypeOptions = [
 ];
 
 const { mutate, isPending } = useCreateSensor(props.placeId, props.deviceId);
+const { success, error: showError } = useToast();
 
 function handleSubmit() {
   error.value = "";
@@ -42,6 +44,7 @@ function handleSubmit() {
     },
     {
       onSuccess: () => {
+        success("Sensor added");
         key.value = "";
         name.value = "";
         unitLabel.value = "";
@@ -50,6 +53,7 @@ function handleSubmit() {
       },
       onError: (e) => {
         error.value = getErrorMessage(e);
+        showError(getErrorMessage(e));
       },
     },
   );
