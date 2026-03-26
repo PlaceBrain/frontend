@@ -26,6 +26,7 @@ src/
 ## Компоненты
 
 - `<script setup lang="ts">` → `<template>`, без `<style>` (только Tailwind)
+- Исключение: `<style scoped>` допускается для CSS, невозможного через Tailwind-утилиты (например, `scrollbar-hide`)
 
 ## Дизайн
 
@@ -34,11 +35,31 @@ src/
 - Шрифты: Inter (body), Space Grotesk (headings — через класс `font-heading`, не inline style)
 - **Цвета только через CSS-переменные** (`var(--color-*)`) — не использовать hardcoded Tailwind-цвета (`bg-red-50`, `text-red-700`)
 
+### Темы: соглашение по surface-переменным
+
+- `--color-surface` — карточки, навбар, модалки, инпуты (передний план)
+- `--color-surface-elevated` — фон страницы (задний план, темнее surface)
+- В **обеих** темах `surface` светлее `surface-elevated` (карточки выделяются на фоне)
+- Hover на элементах, лежащих на `surface-elevated`, должен быть `hover:bg-[var(--color-surface)]`, **не** `hover:bg-[var(--color-surface-elevated)]`
+
 ## UX-правила
 
 - **Деструктивные действия:** использовать `<UiConfirmDialog>` — **не** нативный `confirm()`
 - **Обратная связь:** использовать `useToast()` для success/error уведомлений после мутаций
 - **Общие константы** (роли, enum-опции) — в `shared/types/index.ts`, не дублировать по компонентам
+- **Кнопки:** всегда использовать `<UiButton>` — не raw `<button>` с inline-стилями. Back-навигация — `<UiButton variant="ghost" size="sm">`
+- **Заголовки страниц:** оборачивать в flex-контейнер с `min-h-[36px]` для единообразной высоты между страницами
+- **Группы action-кнопок:** использовать `flex-wrap` + `whitespace-nowrap` (уже в UiButton). На мобильных header — `flex-col gap-3 sm:flex-row`
+
+### Адаптивность
+
+- Breakpoint: 768px (`useBreakpoint()` → `isDesktop`)
+- Мобильный navbar: `fixed bottom-0 h-16` — элементы, привязанные к низу экрана (toast, FAB), должны учитывать его высоту (`bottom-20` = 80px)
+- Горизонтальные скроллы (табы): скрывать скроллбар через класс `scrollbar-hide` (определён в `app/styles/index.css`)
+
+### Удаление сущностей (TanStack Query)
+
+- При удалении сущности: сначала `removeQueries` для удалённого ключа, потом `invalidateQueries` для списка — иначе активный query на удалённую сущность вызовет 403/404
 
 ## Доступность (a11y)
 
