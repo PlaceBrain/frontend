@@ -3,14 +3,12 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { useAuth } from "@/shared/lib/use-auth";
-import { useToast } from "@/shared/composables/useToast";
 import { getErrorMessage } from "@/shared/api/types";
 import UiInput from "@/shared/ui/UiInput.vue";
 import UiButton from "@/shared/ui/UiButton.vue";
 
 const router = useRouter();
 const { login, sendOtp } = useAuth();
-const toast = useToast();
 
 const email = ref("");
 const password = ref("");
@@ -25,7 +23,6 @@ async function handleSubmit() {
     router.push({ name: "places" });
   } catch (e) {
     if (axios.isAxiosError(e) && e.response?.data?.detail === "Email not verified") {
-      toast.error("Please verify your email first");
       try {
         await sendOtp(email.value);
       } catch {
