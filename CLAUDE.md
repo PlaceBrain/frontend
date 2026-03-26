@@ -45,7 +45,7 @@ src/
 ## UX-правила
 
 - **Деструктивные действия:** использовать `<UiConfirmDialog>` — **не** нативный `confirm()`
-- **Обратная связь:** использовать `useToast()` для success/error уведомлений после мутаций
+- **Обратная связь:** использовать `useToast()` для success/error уведомлений после мутаций. На auth-страницах (login, register, verify-otp) — **не** использовать тосты, показывать обратную связь инлайном в форме
 - **Общие константы** (роли, enum-опции) — в `shared/types/index.ts`, не дублировать по компонентам
 - **Кнопки:** всегда использовать `<UiButton>` — не raw `<button>` с inline-стилями. Back-навигация — `<UiButton variant="ghost" size="sm">`
 - **Заголовки страниц:** оборачивать в flex-контейнер с `min-h-[36px]` для единообразной высоты между страницами
@@ -72,4 +72,6 @@ src/
 
 - API hooks: TanStack Query в `entities/*/api/`, ключи в `shared/api/query-keys.ts`
 - Auth: OAuth2 form-encoded login, Bearer token, auto-refresh через axios interceptor (401 → refresh → retry queue)
+- Auth flow: регистрация → OTP-верификация email (`/verify-otp`) → логин. Неверифицированный пользователь не может залогиниться (бэкенд возвращает 400 "Email not verified", фронтенд редиректит на `/verify-otp`)
+- OTP: 6-значный код, кулдаун переотправки 60 сек, максимум 5 попыток, истекает через 5 минут. Для ввода используется `UiOtpInput` (6 отдельных ячеек)
 - MQTT: WebSocket через `/mqtt`, credentials через `POST /api/mqtt/credentials`, auto-reconnect 5s, auto-refresh credentials
