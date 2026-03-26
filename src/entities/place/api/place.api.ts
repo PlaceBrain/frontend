@@ -60,7 +60,8 @@ export function useDeletePlace() {
     mutationFn: async (placeId: string) => {
       await api.delete(`/api/places/${placeId}`);
     },
-    onSuccess: () => {
+    onSuccess: (_data, placeId) => {
+      queryClient.removeQueries({ queryKey: queryKeys.places.detail(placeId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.places.all() });
     },
   });

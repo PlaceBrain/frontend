@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { useToast } from "@/shared/composables/useToast";
+import { useBreakpoint } from "@/shared/lib/use-breakpoint";
 
 const { toasts, remove } = useToast();
+const { isDesktop } = useBreakpoint();
 </script>
 
 <template>
   <Teleport to="body">
-    <div class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2" aria-live="polite">
+    <div
+      :class="['fixed right-4 z-[100] flex flex-col gap-2', isDesktop ? 'bottom-4' : 'bottom-20']"
+      aria-live="polite"
+    >
       <TransitionGroup name="toast">
         <div
           v-for="toast in toasts"

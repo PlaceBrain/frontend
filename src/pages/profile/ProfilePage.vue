@@ -11,7 +11,9 @@ const ui = useUiStore();
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">Profile</h1>
+    <div class="flex items-center mb-6 min-h-[36px]">
+      <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Profile</h1>
+    </div>
 
     <div v-if="isLoading" class="flex justify-center py-16">
       <UiSpinner size="lg" />

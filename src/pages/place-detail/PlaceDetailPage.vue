@@ -64,21 +64,18 @@ watch(
 
     <template v-else-if="place">
       <div class="mb-6">
-        <button
-          class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors mb-4 cursor-pointer"
-          @click="router.push({ name: 'places' })"
-        >
+        <UiButton variant="ghost" size="sm" class="mb-4" @click="router.push({ name: 'places' })">
           &larr; Back to places
-        </button>
+        </UiButton>
 
-        <div class="flex items-start justify-between">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">{{ place.name }}</h1>
             <p v-if="place.description" class="mt-1 text-sm text-[var(--color-text-secondary)]">
               {{ place.description }}
             </p>
           </div>
-          <div v-if="canManage" class="flex items-center gap-2">
+          <div v-if="canManage" class="flex items-center gap-2 flex-wrap">
             <UiButton
               variant="secondary"
               size="sm"

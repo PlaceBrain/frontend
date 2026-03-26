@@ -45,8 +45,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const isPublicAuthEndpoint =
-      url.startsWith("/api/auth/") && url !== "/api/auth/me";
+    const isPublicAuthEndpoint = url.startsWith("/api/auth/") && url !== "/api/auth/me";
 
     if (status !== 401 || originalRequest._retry || isPublicAuthEndpoint) {
       return Promise.reject(error);

@@ -70,19 +70,21 @@ function copyToken() {
 
 <template>
   <div>
-    <button
-      class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors mb-4 cursor-pointer"
+    <UiButton
+      variant="ghost"
+      size="sm"
+      class="mb-4"
       @click="router.push({ name: 'devices-list', params: { placeId } })"
     >
       &larr; Back to devices
-    </button>
+    </UiButton>
 
     <div v-if="isLoading" class="flex justify-center py-16">
       <UiSpinner size="lg" />
     </div>
 
     <template v-else-if="device">
-      <div class="flex items-start justify-between mb-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-6">
         <div>
           <div class="flex items-center gap-3">
             <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">{{ device.name }}</h1>
@@ -94,7 +96,7 @@ function copyToken() {
             Last seen: {{ new Date(device.last_seen_at).toLocaleString() }}
           </p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
           <UiButton variant="secondary" size="sm" @click="showEditModal = true">Edit</UiButton>
           <UiButton
             variant="secondary"

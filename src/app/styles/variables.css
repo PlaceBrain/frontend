@@ -50,9 +50,9 @@
 }
 
 .dark {
-  --color-surface: #000000;
-  --color-surface-elevated: #0a0a0a;
-  --color-border: #1a1a1a;
+  --color-surface: #111111;
+  --color-surface-elevated: #080808;
+  --color-border: #1e1e1e;
   --color-text-primary: #e5e5e5;
   --color-text-secondary: #737373;
   --color-accent-light: rgba(110, 158, 249, 0.12);

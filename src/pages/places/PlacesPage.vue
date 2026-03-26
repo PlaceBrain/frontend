@@ -20,7 +20,7 @@ function handleSelect(place: Place) {
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-6 min-h-[36px]">
       <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Places</h1>
       <UiButton @click="showCreateModal = true"> New place </UiButton>
     </div>

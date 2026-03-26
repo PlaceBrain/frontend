@@ -24,12 +24,14 @@ function formatLastSeen(lastSeen: string | null): string {
 
 <template>
   <div>
-    <button
-      class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors mb-4 cursor-pointer"
+    <UiButton
+      variant="ghost"
+      size="sm"
+      class="mb-4"
       @click="router.push({ name: 'place-detail', params: { placeId } })"
     >
       &larr; Back to place
-    </button>
+    </UiButton>
 
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Devices</h1>
@@ -54,7 +56,7 @@ function formatLastSeen(lastSeen: string | null): string {
       <button
         v-for="device in devices"
         :key="device.device_id"
-        class="w-full flex items-center justify-between py-4 hover:bg-[var(--color-surface-elevated)] transition-colors cursor-pointer text-left px-2 rounded-lg"
+        class="w-full flex items-center justify-between py-4 hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-left px-2 rounded-lg"
         @click="
           router.push({ name: 'device-detail', params: { placeId, deviceId: device.device_id } })
         "

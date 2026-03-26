@@ -31,7 +31,7 @@ function handleDelete() {
 </script>
 
 <template>
-  <UiButton variant="danger" :loading="isPending" @click="showConfirm = true">
+  <UiButton variant="danger" size="sm" :loading="isPending" @click="showConfirm = true">
     Delete place
   </UiButton>
   <UiConfirmDialog
