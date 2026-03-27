@@ -2,7 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { usePlace } from "@/entities/place/api/place.api";
-import { useDevices } from "@/entities/device/api/device.api";
+import { useDevicesWithDetails } from "@/entities/device/api/device.api";
 import { fetchLatestReadings } from "@/entities/device/api/telemetry.api";
 import PlaceTabs from "@/widgets/place-tabs/PlaceTabs.vue";
 import EditPlaceModal from "@/features/edit-place/EditPlaceModal.vue";
@@ -15,7 +15,7 @@ const route = useRoute();
 const router = useRouter();
 const placeId = computed(() => route.params.placeId as string);
 const { data: place, isLoading } = usePlace(placeId);
-const { data: devices } = useDevices(placeId);
+const { data: devices } = useDevicesWithDetails(placeId);
 
 const showEditModal = ref(false);
 
