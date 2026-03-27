@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useDevicesWithDetails } from "@/entities/device/api/device.api";
 import type { Sensor } from "@/entities/device/model/types";
 import SensorChart from "@/widgets/sensor-chart/SensorChart.vue";
@@ -11,15 +11,19 @@ import UiEmptyState from "@/shared/ui/UiEmptyState.vue";
 
 interface Props {
   placeId: string;
+  period: string;
+  isLive: boolean;
   latestValues?: Map<string, Map<string, { value: number; timestamp: string }>>;
 }
 
 const props = defineProps<Props>();
 
-const { data: devices, isLoading } = useDevicesWithDetails(props.placeId);
+const emit = defineEmits<{
+  "update:period": [period: string];
+  "update:is-live": [live: boolean];
+}>();
 
-const selectedPeriod = ref("8h");
-const isLive = ref(false);
+const { data: devices, isLoading } = useDevicesWithDetails(props.placeId);
 
 interface SensorRow {
   sensor: Sensor;
@@ -39,7 +43,7 @@ const sensorRows = computed<SensorRow[]>(() => {
 });
 
 const periodConfig = computed(() => {
-  const period = PERIODS.find((p) => p.key === selectedPeriod.value) ?? PERIODS[1];
+  const period = PERIODS.find((p) => p.key === props.period) ?? PERIODS[1];
   const now = new Date();
   const from = new Date(now.getTime() - period.hours * 3600_000);
   return {
@@ -50,16 +54,14 @@ const periodConfig = computed(() => {
 });
 
 function handlePeriodChange(key: string) {
-  isLive.value = false;
-  selectedPeriod.value = key;
+  emit("update:is-live", false);
+  emit("update:period", key);
 }
 
 function handleLiveToggle(value: boolean) {
-  isLive.value = value;
-  if (value) {
-    selectedPeriod.value = "";
-  } else {
-    selectedPeriod.value = "8h";
+  emit("update:is-live", value);
+  if (!value) {
+    emit("update:period", "8h");
   }
 }
 </script>
@@ -67,7 +69,7 @@ function handleLiveToggle(value: boolean) {
 <template>
   <div>
     <div class="flex items-center gap-3 mb-4">
-      <PeriodSelector :model-value="selectedPeriod" @update:model-value="handlePeriodChange" />
+      <PeriodSelector :model-value="period" @update:model-value="handlePeriodChange" />
       <LiveToggle :model-value="isLive" @update:model-value="handleLiveToggle" />
     </div>
 
