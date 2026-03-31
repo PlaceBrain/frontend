@@ -71,7 +71,14 @@ src/
 ## API
 
 - API hooks: TanStack Query в `entities/*/api/`, ключи в `shared/api/query-keys.ts`
+- Shared типы: `PaginatedResponse<T>`, `ApiError` в `shared/api/types.ts`
 - Auth: OAuth2 form-encoded login, Bearer token, auto-refresh через axios interceptor (401 → refresh → retry queue)
 - Auth flow: регистрация → OTP-верификация email (`/verify-otp`) → логин. Неверифицированный пользователь не может залогиниться (бэкенд возвращает 400 "Email not verified", фронтенд редиректит на `/verify-otp`)
 - OTP: 6-значный код, кулдаун переотправки 60 сек, максимум 5 попыток, истекает через 5 минут. Для ввода используется `UiOtpInput` (6 отдельных ячеек)
 - MQTT: WebSocket через `/mqtt`, credentials через `POST /api/mqtt/credentials`, auto-reconnect 5s, auto-refresh credentials
+
+### Пагинация
+
+- `useDevices()` возвращает `PaginatedResponse<DeviceSummary>` — потребители достают `.items` через computed
+- `useDevicesWithDetails()` запрашивает `per_page: 100` и маппит `.items` в детальные объекты
+- Остальные list-хуки (places, members, sensors, actuators, thresholds) возвращают простые массивы — без пагинации
