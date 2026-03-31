@@ -12,7 +12,8 @@ const route = useRoute();
 const router = useRouter();
 const placeId = computed(() => route.params.placeId as string);
 
-const { data: devices, isLoading } = useDevices(placeId);
+const { data: devicesData, isLoading } = useDevices(placeId);
+const devices = computed(() => devicesData.value?.items ?? []);
 const showAddModal = ref(false);
 
 function formatLastSeen(lastSeen: string | null): string {

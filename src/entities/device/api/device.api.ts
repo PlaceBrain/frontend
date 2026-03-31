@@ -9,6 +9,7 @@ import type {
 } from "../model/types";
 import { api } from "@/shared/api/client";
 import { queryKeys } from "@/shared/api/query-keys";
+import type { PaginatedResponse } from "@/shared/api/types";
 
 export function useDevices(placeId: Ref<string> | string) {
   const id = typeof placeId === "string" ? placeId : placeId;
@@ -16,10 +17,10 @@ export function useDevices(placeId: Ref<string> | string) {
     queryKey: computed(() => queryKeys.devices.list(typeof id === "string" ? id : id.value)),
     queryFn: async () => {
       const resolvedId = typeof id === "string" ? id : id.value;
-      const { data } = await api.get<{ devices: DeviceSummary[] }>(
+      const { data } = await api.get<PaginatedResponse<DeviceSummary>>(
         `/api/places/${resolvedId}/devices`,
       );
-      return data.devices;
+      return data;
     },
   });
 }
@@ -30,11 +31,12 @@ export function useDevicesWithDetails(placeId: Ref<string> | string) {
     queryKey: computed(() => ["devices-full", typeof id === "string" ? id : id.value]),
     queryFn: async () => {
       const resolvedId = typeof id === "string" ? id : id.value;
-      const { data: listData } = await api.get<{ devices: DeviceSummary[] }>(
+      const { data: listData } = await api.get<PaginatedResponse<DeviceSummary>>(
         `/api/places/${resolvedId}/devices`,
+        { params: { per_page: 100 } },
       );
       const details = await Promise.all(
-        listData.devices.map(async (d) => {
+        listData.items.map(async (d) => {
           const { data } = await api.get<Device>(
             `/api/places/${resolvedId}/devices/${d.device_id}`,
           );
