@@ -25,17 +25,7 @@ function formatLastSeen(lastSeen: string | null): string {
 
 <template>
   <div>
-    <UiButton
-      variant="ghost"
-      size="sm"
-      class="mb-4"
-      @click="router.push({ name: 'place-detail', params: { placeId } })"
-    >
-      &larr; Back to place
-    </UiButton>
-
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Devices</h1>
+    <div class="flex items-center justify-end mb-4">
       <UiButton size="sm" @click="showAddModal = true">Add device</UiButton>
     </div>
 
