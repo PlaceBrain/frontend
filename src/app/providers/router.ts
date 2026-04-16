@@ -13,13 +13,44 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: "places/:placeId",
-        name: "place-detail",
         component: () => import("@/pages/place-detail/PlaceDetailPage.vue"),
-      },
-      {
-        path: "places/:placeId/devices",
-        name: "devices-list",
-        component: () => import("@/pages/devices-list/DevicesListPage.vue"),
+        children: [
+          {
+            path: "",
+            name: "place-detail",
+            redirect: (to) => ({ name: "place-overview", params: to.params }),
+          },
+          {
+            path: "overview",
+            name: "place-overview",
+            component: () => import("@/pages/place-overview/PlaceOverviewPage.vue"),
+          },
+          {
+            path: "devices",
+            name: "devices-list",
+            component: () => import("@/pages/devices-list/DevicesListPage.vue"),
+          },
+          {
+            path: "charts",
+            name: "place-charts",
+            component: () => import("@/pages/place-charts/PlaceChartsPage.vue"),
+          },
+          {
+            path: "alerts",
+            name: "place-alerts",
+            component: () => import("@/pages/place-alerts/PlaceAlertsPage.vue"),
+          },
+          {
+            path: "members",
+            name: "place-members",
+            component: () => import("@/pages/place-members/PlaceMembersPage.vue"),
+          },
+          {
+            path: "settings",
+            name: "place-settings",
+            component: () => import("@/pages/place-settings/PlaceSettingsPage.vue"),
+          },
+        ],
       },
       {
         path: "places/:placeId/devices/:deviceId",
