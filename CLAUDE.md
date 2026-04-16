@@ -17,7 +17,7 @@
 src/
 ├── app/            # Providers (router, pinia, query), layouts, styles
 ├── pages/          # Pages (LoginPage, PlacesPage, PlaceDetailPage, ...)
-├── widgets/        # Composite blocks (Navbar, MembersPanel, PlaceTabs)
+├── widgets/        # Composite blocks (Sidebar, MobileNavbar, MembersPanel, PlaceTabs)
 ├── features/       # User actions (auth forms, CRUD modals, theme toggle)
 ├── entities/       # Business entities (user, place, member — types, API hooks, UI)
 └── shared/         # UI kit, API client, composables, stores, config
@@ -37,7 +37,7 @@ src/
 
 ### Themes: Surface Variable Convention
 
-- `--color-surface` — cards, navbar, modals, inputs (foreground)
+- `--color-surface` — cards, sidebar, navbar, modals, inputs (foreground)
 - `--color-surface-elevated` — page background (background, darker than surface)
 - In **both** themes `surface` is lighter than `surface-elevated` (cards stand out from the background)
 - Hover on elements placed on `surface-elevated` should use `hover:bg-[var(--color-surface)]`, **not** `hover:bg-[var(--color-surface-elevated)]`
@@ -54,7 +54,9 @@ src/
 ### Responsiveness
 
 - Breakpoint: 768px (`useBreakpoint()` → `isDesktop`)
-- Mobile navbar: `fixed bottom-0 h-16` — elements pinned to the bottom of the screen (toast, FAB) must account for its height (`bottom-20` = 80px)
+- **Desktop navigation:** left `Sidebar` (`widgets/sidebar/`), `w-64` open / `w-16` collapsed (icon rail, 64px fits a 24px icon centered at `px-3` on link + `px-2` on wrapper). Collapse toggled via header chevron or `Cmd/Ctrl+B`, persisted in `localStorage` via the same `watch(state, ..., { immediate: true })` pattern as `theme` in `ui.store`. `<main>` compensates with `ml-64` / `ml-16`.
+- **Mobile navigation:** bottom `MobileNavbar` (`widgets/mobile-navbar/`), `fixed bottom-0 h-16` — elements pinned to the bottom of the screen (toast, FAB) must account for its height (`bottom-20` = 80px)
+- **Sidebar layout stability:** icon X-position must not change between collapsed/open states. Keep `px-3` on item links and the same structure — toggle only text visibility via `transition-opacity duration-200` bound to a reactive class (avoid `v-if` on text — it causes abrupt disappearance out of sync with other fading siblings). Icons used in sidebar items (`PlaceAvatar`, Lucide icons, `UiAvatar`) must have `shrink-0` so flex does not squish them when the container is narrow.
 - Horizontal scrolls (tabs): hide scrollbar via `scrollbar-hide` class (defined in `app/styles/index.css`)
 
 ### Entity Deletion (TanStack Query)
