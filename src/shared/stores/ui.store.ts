@@ -5,9 +5,14 @@ export const useUiStore = defineStore("ui", () => {
   const theme = ref<"light" | "dark">(
     (localStorage.getItem("theme") as "light" | "dark") || "light",
   );
+  const sidebarCollapsed = ref<boolean>(localStorage.getItem("sidebarCollapsed") === "true");
 
   function applyTheme() {
     theme.value = theme.value === "light" ? "dark" : "light";
+  }
+
+  function toggleSidebar() {
+    sidebarCollapsed.value = !sidebarCollapsed.value;
   }
 
   function toggleTheme(event?: MouseEvent) {
@@ -47,5 +52,13 @@ export const useUiStore = defineStore("ui", () => {
     { immediate: true },
   );
 
-  return { theme, toggleTheme };
+  watch(
+    sidebarCollapsed,
+    (value) => {
+      localStorage.setItem("sidebarCollapsed", String(value));
+    },
+    { immediate: true },
+  );
+
+  return { theme, toggleTheme, sidebarCollapsed, toggleSidebar };
 });

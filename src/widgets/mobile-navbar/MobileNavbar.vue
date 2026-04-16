@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, onMounted } from "vue";
+import { ref, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
@@ -17,22 +17,36 @@ const navItems = [
   },
 ];
 
+const navContainer = ref<HTMLElement>();
 const itemRefs = ref<HTMLElement[]>([]);
 const dotStyle = ref({ left: "0px", opacity: "0" });
 
 function updateDot() {
   const activeIndex = navItems.findIndex((item) => item.name === route.name);
-  if (activeIndex === -1 || !itemRefs.value[activeIndex]) {
+  if (activeIndex === -1 || !itemRefs.value[activeIndex] || !navContainer.value) {
     dotStyle.value = { ...dotStyle.value, opacity: "0" };
     return;
   }
   const el = itemRefs.value[activeIndex];
-  const nav = el.parentElement!;
-  const center = el.offsetLeft - nav.offsetLeft + el.offsetWidth / 2;
+  const center = el.offsetLeft - navContainer.value.offsetLeft + el.offsetWidth / 2;
   dotStyle.value = { left: `${center}px`, opacity: "1" };
 }
 
-onMounted(() => nextTick(updateDot));
+let resizeObserver: ResizeObserver | null = null;
+
+onMounted(() => {
+  nextTick(updateDot);
+  if (navContainer.value) {
+    resizeObserver = new ResizeObserver(() => updateDot());
+    resizeObserver.observe(navContainer.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+  resizeObserver = null;
+});
+
 watch(
   () => route.name,
   () => nextTick(updateDot),
@@ -43,7 +57,7 @@ watch(
   <nav
     class="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-border)] bg-[var(--color-surface)]"
   >
-    <div class="relative flex items-center justify-around h-16">
+    <div ref="navContainer" class="relative flex items-center justify-around h-16">
       <div
         class="absolute top-0 h-0.5 w-8 -translate-x-1/2 rounded-full bg-[var(--color-accent)] transition-all duration-200 ease-out"
         :style="dotStyle"

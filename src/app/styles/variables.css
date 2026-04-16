@@ -35,6 +35,22 @@
   --color-toast-error-bg: #fef2f2;
   --color-toast-error-border: #fecaca;
   --color-toast-error-text: #991b1b;
+  --color-avatar-1-bg: #dbeafe;
+  --color-avatar-1-fg: #1d4ed8;
+  --color-avatar-2-bg: #dcfce7;
+  --color-avatar-2-fg: #15803d;
+  --color-avatar-3-bg: #fef3c7;
+  --color-avatar-3-fg: #a16207;
+  --color-avatar-4-bg: #fee2e2;
+  --color-avatar-4-fg: #b91c1c;
+  --color-avatar-5-bg: #ede9fe;
+  --color-avatar-5-fg: #6d28d9;
+  --color-avatar-6-bg: #fce7f3;
+  --color-avatar-6-fg: #be185d;
+  --color-avatar-7-bg: #ccfbf1;
+  --color-avatar-7-fg: #0f766e;
+  --color-avatar-8-bg: #ffedd5;
+  --color-avatar-8-fg: #c2410c;
 }
 
 @supports not (view-transition-name: root) {
@@ -68,4 +84,20 @@
   --color-toast-error-bg: rgba(232, 90, 79, 0.08);
   --color-toast-error-border: #991b1b;
   --color-toast-error-text: #fca5a5;
+  --color-avatar-1-bg: rgba(59, 130, 246, 0.18);
+  --color-avatar-1-fg: #93c5fd;
+  --color-avatar-2-bg: rgba(34, 197, 94, 0.18);
+  --color-avatar-2-fg: #86efac;
+  --color-avatar-3-bg: rgba(234, 179, 8, 0.18);
+  --color-avatar-3-fg: #fde68a;
+  --color-avatar-4-bg: rgba(239, 68, 68, 0.18);
+  --color-avatar-4-fg: #fca5a5;
+  --color-avatar-5-bg: rgba(139, 92, 246, 0.18);
+  --color-avatar-5-fg: #c4b5fd;
+  --color-avatar-6-bg: rgba(236, 72, 153, 0.18);
+  --color-avatar-6-fg: #f9a8d4;
+  --color-avatar-7-bg: rgba(20, 184, 166, 0.18);
+  --color-avatar-7-fg: #99f6e4;
+  --color-avatar-8-bg: rgba(249, 115, 22, 0.18);
+  --color-avatar-8-fg: #fdba74;
 }
