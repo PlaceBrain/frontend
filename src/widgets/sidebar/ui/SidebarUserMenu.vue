@@ -66,10 +66,7 @@ function goProfile() {
 </script>
 
 <template>
-  <div
-    ref="rootRef"
-    class="relative shrink-0 border-t border-[var(--color-border)] p-2 overflow-hidden"
-  >
+  <div ref="rootRef" class="relative shrink-0 border-t border-[var(--color-border)] p-2">
     <button
       type="button"
       :class="[
