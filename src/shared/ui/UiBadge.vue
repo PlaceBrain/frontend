@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  variant?: "default" | "accent" | "success" | "danger";
+  variant?: "default" | "accent" | "success" | "warning" | "danger";
 }
 
 withDefaults(defineProps<Props>(), {
@@ -11,7 +11,8 @@ const variantClasses = {
   default: "bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)]",
   accent: "bg-[var(--color-accent-light)] text-[var(--color-accent)]",
   success: "bg-[var(--color-status-online-bg)] text-[var(--color-status-online-text)]",
-  danger: "bg-[var(--color-danger)]/10 text-[var(--color-danger)]",
+  warning: "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)]",
+  danger: "bg-[var(--color-danger-bg)] text-[var(--color-danger-text)]",
 };
 </script>
 

@@ -156,15 +156,15 @@ function onResolve(alertId: string) {
               :class="
                 alert.severity === 'critical'
                   ? 'text-[var(--color-danger)]'
-                  : 'text-[var(--color-accent)]'
+                  : 'text-[var(--color-warning)]'
               "
             />
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <UiBadge :variant="alert.severity === 'critical' ? 'danger' : 'accent'">
+                <UiBadge :variant="alert.severity === 'critical' ? 'danger' : 'warning'">
                   {{ alert.severity }}
                 </UiBadge>
-                <UiBadge :variant="alert.status === 'resolved' ? 'success' : 'default'">
+                <UiBadge :variant="alert.status === 'resolved' ? 'success' : 'accent'">
                   {{ alert.status }}
                 </UiBadge>
                 <span class="text-sm font-medium text-[var(--color-text-primary)] truncate">

@@ -100,7 +100,7 @@ function handleRemove(thresholdId: string) {
           class="flex items-center justify-between py-2"
         >
           <div class="flex items-center gap-2">
-            <UiBadge :variant="t.severity === 'critical' ? 'danger' : 'accent'">
+            <UiBadge :variant="t.severity === 'critical' ? 'danger' : 'warning'">
               {{ t.severity }}
             </UiBadge>
             <span class="text-sm text-[var(--color-text-primary)]">
