@@ -20,7 +20,7 @@ const canManage = computed(
   () => place.value?.user_role === "owner" || place.value?.user_role === "admin",
 );
 
-const { latestValues } = useMqtt(placeId);
+const { latestValues, alerts } = useMqtt(placeId);
 
 watch(
   devices,
@@ -50,7 +50,7 @@ watch(
   { immediate: true },
 );
 
-provide(placeDetailKey, { placeId, canManage, latestValues });
+provide(placeDetailKey, { placeId, canManage, latestValues, alerts });
 </script>
 
 <template>

@@ -10,7 +10,10 @@ const ui = useUiStore();
 
 const mainClasses = computed(() => {
   if (!isDesktop.value) return "px-4 pt-4 pb-20";
-  return ["px-8 pt-8 transition-[margin] duration-200", ui.sidebarCollapsed ? "ml-16" : "ml-64"];
+  return [
+    "px-8 pt-8 pb-8 transition-[margin] duration-200",
+    ui.sidebarCollapsed ? "ml-16" : "ml-64",
+  ];
 });
 </script>
 

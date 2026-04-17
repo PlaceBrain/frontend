@@ -2,12 +2,13 @@ import { ref, onMounted, onUnmounted, type Ref } from "vue";
 import mqtt from "mqtt";
 import { api } from "@/shared/api/client";
 import type { MqttCredentials } from "@/shared/types";
+import type { Alert, AlertMqttPayload } from "@/entities/alert/model/types";
 
 export function useMqtt(placeId: Ref<string> | string) {
   const latestValues = ref<Map<string, Map<string, { value: number; timestamp: string }>>>(
     new Map(),
   );
-  const alerts = ref<Array<Record<string, unknown>>>([]);
+  const alerts = ref<Alert[]>([]);
   const connected = ref(false);
 
   let client: mqtt.MqttClient | null = null;
@@ -42,7 +43,21 @@ export function useMqtt(placeId: Ref<string> | string) {
           latestValues.value = new Map(latestValues.value);
         }
       } else if (topic.endsWith("/alerts")) {
-        alerts.value = [...alerts.value.slice(-99), data];
+        const payload = data as Partial<AlertMqttPayload>;
+        if (!payload || typeof payload.id !== "string") return;
+        const { event_type, ...rest } = payload as AlertMqttPayload;
+        const alert: Alert = {
+          ...(rest as Omit<Alert, "status">),
+          status: event_type === "resolved" ? "resolved" : "active",
+        };
+        const existingIdx = alerts.value.findIndex((a) => a.id === alert.id);
+        if (existingIdx !== -1) {
+          const next = [...alerts.value];
+          next[existingIdx] = alert;
+          alerts.value = next;
+        } else {
+          alerts.value = [alert, ...alerts.value].slice(0, 100);
+        }
       }
     } catch {
       // Ignore parse errors
