@@ -9,7 +9,7 @@ const { isDesktop } = useBreakpoint();
 <template>
   <Teleport to="body">
     <div
-      :class="['fixed right-6 z-[100] flex flex-col gap-2', isDesktop ? 'bottom-8' : 'bottom-20']"
+      :class="['fixed right-4 z-[100] flex flex-col gap-2', isDesktop ? 'bottom-4' : 'bottom-20']"
       aria-live="polite"
     >
       <TransitionGroup name="toast">
