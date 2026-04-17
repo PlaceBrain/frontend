@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, type Ref } from "vue";
-import type { Alert, AlertListFilters } from "../model/types";
+import type { Alert, AlertListFilters, GlobalAlertCount } from "../model/types";
 import { api } from "@/shared/api/client";
 import { queryKeys } from "@/shared/api/query-keys";
 import type { PaginatedResponse } from "@/shared/api/types";
@@ -35,6 +35,18 @@ export function useAlerts(
   });
 }
 
+export function useGlobalAlertCount() {
+  return useQuery({
+    queryKey: queryKeys.alerts.globalCount(),
+    queryFn: async () => {
+      const { data } = await api.get<GlobalAlertCount>("/api/alerts/count");
+      return data;
+    },
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
+  });
+}
+
 export function useResolveAlert(placeId: Ref<string> | string) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -46,6 +58,7 @@ export function useResolveAlert(placeId: Ref<string> | string) {
     onSuccess: () => {
       const pId = typeof placeId === "string" ? placeId : placeId.value;
       queryClient.invalidateQueries({ queryKey: ["alerts", pId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.alerts.globalCount() });
     },
   });
 }
