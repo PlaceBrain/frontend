@@ -23,6 +23,11 @@ export interface AlertMqttPayload extends Omit<Alert, "status"> {
   event_type: AlertEventType;
 }
 
+export interface GlobalAlertCount {
+  total_unresolved: number;
+  by_place: Record<string, number>;
+}
+
 export interface AlertListFilters {
   severity?: AlertSeverity;
   sensor_id?: string;

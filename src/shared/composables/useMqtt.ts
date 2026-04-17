@@ -1,6 +1,8 @@
 import { ref, onMounted, onUnmounted, type Ref } from "vue";
+import { useQueryClient } from "@tanstack/vue-query";
 import mqtt from "mqtt";
 import { api } from "@/shared/api/client";
+import { queryKeys } from "@/shared/api/query-keys";
 import type { MqttCredentials } from "@/shared/types";
 import type { Alert, AlertMqttPayload } from "@/entities/alert/model/types";
 
@@ -10,6 +12,7 @@ export function useMqtt(placeId: Ref<string> | string) {
   );
   const alerts = ref<Alert[]>([]);
   const connected = ref(false);
+  const queryClient = useQueryClient();
 
   let client: mqtt.MqttClient | null = null;
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -58,6 +61,7 @@ export function useMqtt(placeId: Ref<string> | string) {
         } else {
           alerts.value = [alert, ...alerts.value].slice(0, 100);
         }
+        queryClient.invalidateQueries({ queryKey: queryKeys.alerts.globalCount() });
       }
     } catch {
       // Ignore parse errors

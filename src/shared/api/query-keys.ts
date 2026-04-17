@@ -26,6 +26,7 @@ export const queryKeys = {
   alerts: {
     list: (placeId: string, filters: Record<string, string | undefined> = {}) =>
       ["alerts", placeId, filters] as const,
+    globalCount: () => ["alerts", "count", "global"] as const,
   },
   telemetry: {
     latest: (placeId: string, deviceId: string) =>
